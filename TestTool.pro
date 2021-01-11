@@ -29,7 +29,8 @@ SOURCES += \
     init.cpp \
     modbus.cpp \
     modbusbase.cpp \
-    comparevalue.cpp
+    comparevalue.cpp \
+    sl102.cpp
 
 HEADERS += \
         mainwindow.h \

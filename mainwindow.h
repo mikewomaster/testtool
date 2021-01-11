@@ -2,6 +2,7 @@
 #define MAINWINDOW_H
 
 #include "modbusbase.h"
+#include "init.h"
 
 #include <QMainWindow>
 #include <QModbusDataUnit>
@@ -41,31 +42,34 @@ private:
     void loraRFFinish();
     void FirstTest();
     void SecondTest();
+    void prepareAndSendModbus(int addr, int entry, QString cnt, QString msg);
+    void prepareAndSendModbus(int addr, int entry, int cnt, QString msg);
+    void setUILabelInfo(QLabel*);
+    void setUILabelInfoEachTIme(QLabel *);
 signals:
     void IOAdjustSignal(adjustIOStruct&);
 private slots:
     void serialAlarmTask();
     void on_connectPushButton_clicked();
     void on_connectGoldenPushButton_clicked();
+    void on_connectSl102PushButton_clicked();
     void on_functionStartPushButton_clicked();
     void on_tabWidget_tabBarClicked(int index);
     void on_resetPushButton_clicked();
-
     void on_LMUSBCom_clicked();
     void on_LCUSBCom_clicked();
     void on_LMRS485Com_clicked();
     void on_LCRS485Com_clicked();
-
     void on_LoRaStart_clicked();
     void on_clearPushButton_clicked();
     void on_savePushButton_clicked();
     void IOAdjustSlot(adjustIOStruct&);
     void on_stopPushButton_clicked();
-
     void on_finishedCheckBox_clicked();
-
+    void on_functionSl102StartPushButton_clicked();
 private:
     Ui::MainWindow *ui;
+    Init *init;
     QVector<QString> serialInfoVector;
     ModbusBase *modbusBase;
     QModbusClient *modbusDevice; // also use as lm usb serial in lora test

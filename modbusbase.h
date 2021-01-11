@@ -39,6 +39,8 @@ private slots:
     void handleReadModelName();
     void handleReadVersion();
     void handleReadIOValue();
+    void PowerReadReady(int times);
+    void handleReadPowerFullValue();
     void handleReadAdjustValue();
     void handleSNGoldenSample();
 };

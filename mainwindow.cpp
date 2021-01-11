@@ -1,6 +1,7 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 #include "modbustable.h"
+#include "init.h"
 
 #include <QModbusTcpClient>
 #include <QModbusRtuSerialMaster>
@@ -25,7 +26,8 @@ MainWindow::MainWindow(QWidget *parent) :
     lcModbusDevice(nullptr),
     ui(new Ui::MainWindow),
     flagSwitch(0),
-    tableIndex(0)
+    tableIndex(0),
+    init (new Init)
 {
     ui->setupUi(this);
     serialAlarmInit();
@@ -37,7 +39,7 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->tabWidget->setTabEnabled(2, false);
     ui->tabWidget->setStyleSheet("QTabBar::tab:disabled {width: 0; color: transparent;}");
 
-    setWindowTitle("v2.1.0");
+    setWindowTitle("v3.0.0");
 }
 
 MainWindow::~MainWindow()
@@ -165,6 +167,9 @@ void MainWindow::serialAlarmInit()
         ui->lmUsbCombox->addItem(info.portName());
         ui->LCUsbComBox->addItem(info.portName());
         ui->rstCombox->addItem(info.portName());
+
+        // add for sl102
+        ui->serialSl102ComboBox->addItem(info.portName());
     }
 
     QTimer *serialAlarm = new QTimer();
@@ -188,6 +193,9 @@ void MainWindow::serialAlarmTask()
             ui->rstCombox->clear();
             ui->serialComboBox->clear();
             ui->LCUsbComBox->clear();
+
+            // set for sl102
+            ui->serialSl102ComboBox->clear();
         }
 
         if(modbusGoldenDevice->state() == QModbusDevice::UnconnectedState) {
@@ -207,6 +215,7 @@ void MainWindow::serialAlarmTask()
                 ui->serialComboBox->addItem(info.portName());
                 ui->LCUsbComBox->addItem(info.portName());
                 ui->rstCombox->addItem(info.portName());
+                ui->serialSl102ComboBox->addItem(info.portName());
            }
 
            if(modbusGoldenDevice->state() == QModbusDevice::UnconnectedState) {
@@ -394,6 +403,7 @@ void MainWindow::on_tabWidget_tabBarClicked(int index)
         modbusDevice->disconnectDevice();
         ui->connectPushButton->setText("Connect");
         ui->LMUSBCom->setText("Connect Set");
+        ui->connectSl102PushButton->setText("Connect");
         ui->resetPushButton->setText("Reset");
     }
 

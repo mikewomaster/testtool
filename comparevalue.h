@@ -9,6 +9,9 @@ public:
     compareValue();
     QString modelName;
     QString SN;
+    int powerFull;
+    int powerHalf;
+    int powerEmpty;
 };
 
 #endif // COMPAREVALUE_H

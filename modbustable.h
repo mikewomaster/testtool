@@ -59,4 +59,100 @@
 #define PWMOne 6
 #define PWMTwo 7
 
+// nb parameters
+#define APNAddress (4001 - 1)
+#define APNEntries 16
+
+#define UserAddress (4017 - 1)
+#define UserEntries 8
+
+#define NBPwdAddress (4025 - 1)
+#define NBPwdEntries 8
+
+#define NBIoTModelAddress (4033 - 1)
+#define NBIoTEntries 1
+
+#define NBPLMNAddress (4034 - 1)
+#define NBPLMNEntries 3
+
+#define NBStatusAddress (5001 - 1)
+#define NBStatusEntries 1
+
+#define NBIPAddress (5002 - 1)
+#define NBIPEntries 8
+
+#define NBEnableAddress (821 - 1)
+#define NBEnableEntries 1
+
+#define NBConnTestAddress (4097 - 1)
+#define NBConnTestEntries 1
+
+#define EightEntries 8
+#define OneEntry 1
+
+#define NBRegistrationAddress (4042 -1)
+#define NBProviderAddress (4050 - 1)
+#define NBIMEIAddress (4058 -1)
+#define NBIMSIAddress (4064 - 1)
+#define NBPLMNAddress2 (4072 -1)
+#define NBBANDAddress (4080 - 1)
+#define NBRSSIAddress (4088 - 1)
+#define NBSIMStatus (4096 - 1)
+
+// mqtt parameters
+#define mqttIPAddress (4501 - 1)
+#define mqttIPEntries 16
+
+#define mqttPortAddress (4517 - 1)
+#define mqttPortEntries 1
+
+#define mqttTopicAddress (4518 - 1)
+#define mqttTopicEntreis 32
+
+#define mqttClinetIDAddress (4550 - 1)
+#define mqttClinetIDEntries 16
+
+#define mqttIntervalAddress (4566 - 1)
+#define mqttIntervalEntries 2
+
+#define mqttUserAddress (4568 - 1)
+#define mqttUserEntries 8
+
+#define mqttPassWordAddress (4576 - 1)
+#define mqttPassWordEntries 8
+
+#define mqttRtuTimeOutAddress (4584 - 1)
+#define mqttRTUTimeOutEntries 1
+
+#define mqttStatusAddress (5501 - 1)
+#define mqttStatusEntries 1
+
+#define TCPIPAddress (661 - 1)
+#define TCPIPEntries 16
+
+#define TCPPortAddress (677 - 1)
+#define TCPPortEntries 1
+
+#define MQTTSubTopicAddress (4584 - 1)
+#define MQTTSubTopicEntries 32
+
+#define MQTTServerConnectAddress (4616 - 1)
+#define MQTTServerConnectEntries 1
+
+// led parameters
+#define EnergyOneEntry 1
+#define Entry2 2
+#define Entry16 16
+
+#define EnergyVoltageAddress (601 - 1)
+#define EnergyAmpAddress (602 - 1)
+#define EnergyPowerAddress (603 - 1)
+#define EnergyVRMSAddress (604 - 1)
+#define EnergyIRMSAddress (605 - 1)
+#define EnergyPFAddress (606 -1)
+#define ACFrequencyAddress (307 - 1)
+
+#define controlTestOnAddress (803 - 1)
+#define controlTestOuputAddress (804 - 1)
+
 #endif // MODBUSTABLE_H

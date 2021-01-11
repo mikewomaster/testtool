@@ -1,4 +1,5 @@
 #include "modbusbase.h"
+#include "modbustable.h"
 #include "mainwindow.h"
 
 ModbusBase::ModbusBase():flag(0),
@@ -45,12 +46,8 @@ void ModbusBase::writeRegisters(int addr, int num, QVector<quint16> newValues, Q
     }
 }
 
-void ModbusBase::writeRegisters(int addr, int num, QString str, QModbusClient * modbusDevice)
+void ModbusBase::writeRegisters(int addr, int num, QString str, QModbusClient *modbusDevice)
 {
-    if (str.length() > 16) {
-        QMessageBox::information(nullptr, "Length Error", "Maximum Length of model name should be 8");
-        return;
-    }
     QVector<quint16> values;
 
     int i = 0;
@@ -69,8 +66,10 @@ void ModbusBase::writeRegisters(int addr, int num, QString str, QModbusClient * 
         i++;
     }
 
-    for (i = (i / 2); i < ModelNameEntires; i++) {
-        values.push_back(0x0000);
+    if (addr != mqttTopicAddress && addr != MQTTSubTopicAddress) {
+        for (i = (i / 2); i < num; i++) {
+            values.push_back(0x0000);
+        }
     }
 
     if (modbusDevice->state() == QModbusDevice::UnconnectedState ) {
@@ -133,6 +132,47 @@ void ModbusBase::handleReadAdjustValue()
                                     arg(reply->error(), -1, 16), 5000);
     }
     reply->deleteLater();
+}
+
+void ModbusBase::PowerReadReady(int times)
+{
+    auto reply = qobject_cast<QModbusReply *>(sender());
+    if (!reply)
+        return;
+
+    if (reply->error() == QModbusDevice::NoError) {
+        const QModbusDataUnit unit = reply->result();
+        IOValue = unit.value(0);
+        ui->resultText->append("Read Power: " + QString::number(IOValue));
+
+        // FIXME: power value
+        if (times == 1 && unit.value(0) == cv.powerFull)
+            ui->resultText->append("Read Full Power Success.");
+        else if (times == 2 && unit.value(0) == cv.powerHalf)
+            ui->resultText->append("Read Half Power Success.");
+        else if (times == 3 && unit.value(0) == cv.powerEmpty)
+            ui->resultText->append("Read Empty Power Success.");
+        else {
+            ui->resultText->append("Read Power Fail, Please Check CH Hardware.");
+            flag = 1;
+        }
+
+        getMainWindow()->statusBar()->showMessage(tr("OK!"));
+    } else if (reply->error() == QModbusDevice::ProtocolError) {
+        getMainWindow()->statusBar()->showMessage(tr("Read response error: %1 (Mobus exception: 0x%2)").
+                                    arg(reply->errorString()).
+                                    arg(reply->rawResult().exceptionCode(), -1, 16), 5000);
+    } else {
+        getMainWindow()->statusBar()->showMessage(tr("Read response error: %1 (code: 0x%2)").
+                                    arg(reply->errorString()).
+                                    arg(reply->error(), -1, 16), 5000);
+    }
+    reply->deleteLater();
+}
+
+void ModbusBase::handleReadPowerFullValue()
+{
+    PowerReadReady(1);
 }
 
 void ModbusBase::handleReadIOValue()
@@ -295,6 +335,7 @@ void ModbusBase::handleReadVersion()
             s[(2*i) +1] = unit.value(i) & 0x00ff;
         }
         ui->versionLineEdit->setText(s);
+        ui->versionSl102LineEdit->setText(s);
         getMainWindow()->statusBar()->showMessage(tr("OK!"));
     } else if (reply->error() == QModbusDevice::ProtocolError) {
         flag = RaiseFlag;
@@ -390,3 +431,5 @@ QMainWindow* ModbusBase::getMainWindow()
             return mainWin;
     return nullptr;
 }
+
+

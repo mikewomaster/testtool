@@ -1,6 +1,9 @@
 #include "comparevalue.h"
 
-compareValue::compareValue()
+compareValue::compareValue():
+    powerEmpty(0),
+    powerHalf(50),
+    powerFull(100)
 {
 
 }

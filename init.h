@@ -14,7 +14,8 @@ class Init
 public:
     Init();
     void initEnvironmentJSON();
-    QJsonArray Array;
+    QJsonArray cellularArray;
+    QJsonArray mqttArray;
     int Size;
 };
 
