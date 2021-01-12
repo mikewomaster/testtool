@@ -41,8 +41,13 @@ private slots:
     void handleReadIOValue();
     void PowerReadReady(int times);
     void handleReadPowerFullValue();
+    void handleReadPowerHalfValue();
+    void handleReadPowerEmptyValue();
     void handleReadAdjustValue();
     void handleSNGoldenSample();
+    void handleNBSIM();
+    void handleNBRSSI();
+    void handleNBSTATUS();
 };
 
 #endif // MODBUSWRITEBASE_H

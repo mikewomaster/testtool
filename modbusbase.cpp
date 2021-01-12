@@ -142,7 +142,6 @@ void ModbusBase::PowerReadReady(int times)
 
     if (reply->error() == QModbusDevice::NoError) {
         const QModbusDataUnit unit = reply->result();
-        IOValue = unit.value(0);
         ui->resultText->append("Read Power: " + QString::number(IOValue));
 
         // FIXME: power value
@@ -173,6 +172,135 @@ void ModbusBase::PowerReadReady(int times)
 void ModbusBase::handleReadPowerFullValue()
 {
     PowerReadReady(1);
+}
+
+void ModbusBase::handleReadPowerHalfValue()
+{
+    PowerReadReady(2);
+}
+
+void ModbusBase::handleReadPowerEmptyValue()
+{
+    PowerReadReady(3);
+}
+
+void ModbusBase::handleNBSIM()
+{
+    auto reply = qobject_cast<QModbusReply *>(sender());
+    if (!reply)
+        return;
+
+    if (reply->error() == QModbusDevice::NoError) {
+        const QModbusDataUnit unit = reply->result();
+        int simStatus = unit.value(0);
+
+        if (simStatus == 0) {
+            ui->resultText->append("SIM NOT INSERTED");
+            flag = 1;
+        }
+        else if (simStatus == 1) {
+            ui->resultText->append("SIM READY");
+            flag = 0;
+        }
+        else if (simStatus == 2) {
+            ui->resultText->append("SIM NOT READY");
+            flag = 1;
+        }
+        else {
+            flag = 1;
+        }
+
+        getMainWindow()->statusBar()->showMessage(tr("OK!"));
+    } else if (reply->error() == QModbusDevice::ProtocolError) {
+        flag = 1;
+        ui->resultText->append("Read Fail. ");
+        getMainWindow()->statusBar()->showMessage(tr("Read response error: %1 (Mobus exception: 0x%2)").
+                                    arg(reply->errorString()).
+                                    arg(reply->rawResult().exceptionCode(), -1, 16), 5000);
+    } else {
+        flag = 1;
+        ui->resultText->append("Read Fail");
+        getMainWindow()->statusBar()->showMessage(tr("Read response error: %1 (code: 0x%2)").
+                                    arg(reply->errorString()).
+                                    arg(reply->error(), -1, 16), 5000);
+    }
+    reply->deleteLater();
+}
+
+void ModbusBase::handleNBSTATUS()
+{
+    auto reply = qobject_cast<QModbusReply *>(sender());
+    if (!reply)
+        return;
+
+    if (reply->error() == QModbusDevice::NoError) {
+        const QModbusDataUnit unit = reply->result();
+        int nbStatus = unit.value(0);
+
+        if (nbStatus == 0) {
+            ui->resultText->append("SIM ERR");
+            flag = 1;
+        }
+        else if (nbStatus == 1) {
+            ui->resultText->append("CELLUAR CONNECTED");
+            flag = 0;
+        }
+        else if (nbStatus == 2) {
+            ui->resultText->append("CELLULAR SEARCHING");
+            flag = 1;
+        }
+        else if (nbStatus = 3) {
+            ui->resultText->append("CELLULAR DENIED");
+            flag = 1;
+        }
+        else {
+            flag = 1;
+        }
+
+        getMainWindow()->statusBar()->showMessage(tr("OK!"));
+    } else if (reply->error() == QModbusDevice::ProtocolError) {
+        flag = 1;
+        ui->resultText->append("Read Fail. ");
+        getMainWindow()->statusBar()->showMessage(tr("Read response error: %1 (Mobus exception: 0x%2)").
+                                    arg(reply->errorString()).
+                                    arg(reply->rawResult().exceptionCode(), -1, 16), 5000);
+    } else {
+        flag = 1;
+        ui->resultText->append("Read Fail");
+        getMainWindow()->statusBar()->showMessage(tr("Read response error: %1 (code: 0x%2)").
+                                    arg(reply->errorString()).
+                                    arg(reply->error(), -1, 16), 5000);
+    }
+    reply->deleteLater();
+}
+
+void ModbusBase::handleNBRSSI()
+{
+    auto reply = qobject_cast<QModbusReply *>(sender());
+    if (!reply)
+        return;
+
+    if (reply->error() == QModbusDevice::NoError) {
+        const QModbusDataUnit unit = reply->result();
+        int nbRSSI = unit.value(0);
+        QString msg = "NB Read RSSI Value" + QString::number(nbRSSI);
+        ui->resultText->append(msg);
+        flag = 0;
+        getMainWindow()->statusBar()->showMessage(tr("OK!"));
+    } else if (reply->error() == QModbusDevice::ProtocolError) {
+        flag = 1;
+        ui->resultText->append("Read Fail. ");
+        getMainWindow()->statusBar()->showMessage(tr("Read response error: %1 (Mobus exception: 0x%2)").
+                                    arg(reply->errorString()).
+                                    arg(reply->rawResult().exceptionCode(), -1, 16), 5000);
+    } else {
+        flag = 1;
+        ui->resultText->append("Read Fail");
+        getMainWindow()->statusBar()->showMessage(tr("Read response error: %1 (code: 0x%2)").
+                                    arg(reply->errorString()).
+                                    arg(reply->error(), -1, 16), 5000);
+    }
+    reply->deleteLater();
 }
 
 void ModbusBase::handleReadIOValue()
