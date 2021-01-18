@@ -9,7 +9,7 @@ Init::Init()
 #define BUG_ON 0
 void Init::initEnvironmentJSON()
 {
-    QFile file("config2.json");
+    QFile file("config.json");
     if(!file.open(QIODevice::ReadWrite)) {
         QMessageBox::information(nullptr, "File", "Can't find config.json.");
         return;
@@ -24,8 +24,13 @@ void Init::initEnvironmentJSON()
         obj = jsonDoc.object();
         cellularArray =  obj["cellular"].toArray();
         mqttArray = obj["mqtt"].toArray();
+        configArray = obj["config"].toArray();
 
     #if BUG_ON
+        qDebug() << mqttArray[0].toObject()["username"].toString();
+        qDebug() << mqttArray[0].toObject()["password"].toString();
+        qDebug() << mqttArray[0].toObject()["port"].toInt();
+
         qDebug() << cellularArray[0].toObject()["username"].toString();
         qDebug() << cellularArray[0].toObject()["password"].toString();
         qDebug() << mqttArray[0].toObject()["username"].toString();

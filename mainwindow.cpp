@@ -26,8 +26,8 @@ MainWindow::MainWindow(QWidget *parent) :
     lcModbusDevice(nullptr),
     ui(new Ui::MainWindow),
     flagSwitch(0),
-    tableIndex(0),
-    init (new Init)
+    tableIndex(0)
+    //init (new Init)
 {
     ui->setupUi(this);
     serialAlarmInit();
@@ -36,6 +36,9 @@ MainWindow::MainWindow(QWidget *parent) :
 
     connect(this, &MainWindow::IOAdjustSignal, this, &MainWindow::IOAdjustSlot);
     ui->modelNameComBox->setCurrentIndex(3);
+
+    ui->tabWidget->setTabEnabled(0, false);
+    ui->tabWidget->setTabEnabled(1, false);
     ui->tabWidget->setTabEnabled(2, false);
     ui->tabWidget->setStyleSheet("QTabBar::tab:disabled {width: 0; color: transparent;}");
 

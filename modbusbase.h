@@ -4,6 +4,7 @@
 #include "modbustable.h"
 #include "ui_mainwindow.h"
 #include "comparevalue.h"
+#include "init.h"
 
 #include <QModbusTcpClient>
 #include <QModbusRtuSerialMaster>

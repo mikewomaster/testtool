@@ -31,7 +31,7 @@ void ModbusBase::writeRegisters(int addr, int num, QVector<quint16> newValues, Q
                     flag = 1;
                     ui->resultText->append("Set Fail\n");
                 } else {
-                    // ui->resultText->append("Set Successful\n");
+                    ui->resultText->append("Set Successful\n");
                     flag = 0;
                     getMainWindow()->statusBar()->showMessage(tr("OK!"));
                 }
@@ -140,16 +140,23 @@ void ModbusBase::PowerReadReady(int times)
     if (!reply)
         return;
 
+    Init init;
+
     if (reply->error() == QModbusDevice::NoError) {
         const QModbusDataUnit unit = reply->result();
         ui->resultText->append("Read Power: " + QString::number(IOValue));
 
-        // FIXME: power value
-        if (times == 1 && unit.value(0) == cv.powerFull)
+        if (times == 1 && \
+            unit.value(0) >= init.configArray[0].toObject()["powerMin100"].toInt() && \
+            unit.value(0) <= init.configArray[0].toObject()["powerMax100"].toInt())
             ui->resultText->append("Read Full Power Success.");
-        else if (times == 2 && unit.value(0) == cv.powerHalf)
+        else if (times == 2 && \
+                 unit.value(0) >= init.configArray[0].toObject()["powerMin50"].toInt() && \
+                 unit.value(0) <= init.configArray[0].toObject()["powerMax50"].toInt())
             ui->resultText->append("Read Half Power Success.");
-        else if (times == 3 && unit.value(0) == cv.powerEmpty)
+        else if (times == 3 && \
+                 unit.value(0) >= init.configArray[0].toObject()["powerMin0"].toInt() && \
+                 unit.value(0) <= init.configArray[0].toObject()["powerMax0"].toInt())
             ui->resultText->append("Read Empty Power Success.");
         else {
             ui->resultText->append("Read Power Fail, Please Check CH Hardware.");

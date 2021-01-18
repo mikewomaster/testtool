@@ -92,6 +92,8 @@ void MainWindow::on_functionSl102StartPushButton_clicked()
     ui->modelSL102Label->clear();
     ui->SNSl102Label->clear();
 
+    Init init;
+
     ui->resultText->append("------------------------");
     ui->resultText->append("---Start Product Test---");
 
@@ -192,7 +194,7 @@ void MainWindow::on_functionSl102StartPushButton_clicked()
 
     // cellular config
     if (ui->cellularSl102CheckBox->isChecked()){
-        QString strOfCellular = init->cellularArray[0].toObject()["apn"].toString();
+        QString strOfCellular = init.cellularArray[0].toObject()["apn"].toString();
         prepareAndSendModbus(APNAddress, APNEntries, strOfCellular, "set apn of cellular:");
         setUILabelInfoEachTIme(ui->cellularSl102Label);
         if (ui->cellularSl102Label->text().contains("FAIL")) {
@@ -200,7 +202,7 @@ void MainWindow::on_functionSl102StartPushButton_clicked()
             return;
         }
 
-        strOfCellular = init->cellularArray[0].toObject()["username"].toString();
+        strOfCellular = init.cellularArray[0].toObject()["username"].toString();
         prepareAndSendModbus(UserAddress, UserEntries, strOfCellular, "set username of cellular:");
         setUILabelInfoEachTIme(ui->cellularSl102Label);
         if (ui->cellularSl102Label->text().contains("FAIL")) {
@@ -208,7 +210,7 @@ void MainWindow::on_functionSl102StartPushButton_clicked()
             return;
         }
 
-        strOfCellular = init->cellularArray[0].toObject()["password"].toString();
+        strOfCellular = init.cellularArray[0].toObject()["password"].toString();
         prepareAndSendModbus(NBPwdAddress, NBPwdEntries, strOfCellular, "set password of cellular:");
         setUILabelInfoEachTIme(ui->mqttSl102Label);
         if (ui->cellularSl102Label->text().contains("FAIL")) {
@@ -216,7 +218,7 @@ void MainWindow::on_functionSl102StartPushButton_clicked()
             return;
         }
 
-        strOfCellular = init->cellularArray[0].toObject()["plmn"].toString();
+        strOfCellular = init.cellularArray[0].toObject()["plmn"].toString();
         prepareAndSendModbus(NBPLMNAddress, NBPLMNEntries, strOfCellular, "set plmn of cellular:");
         setUILabelInfoEachTIme(ui->cellularSl102Label);
         if (ui->cellularSl102Label->text().contains("FAIL")) {
@@ -229,15 +231,16 @@ void MainWindow::on_functionSl102StartPushButton_clicked()
 
     // mqtt config
     if (ui->mqttSl102CheckBox->isChecked()) {
-        QString strOfMqtt = init->mqttArray[0].toObject()["server"].toString();
+
+        QString strOfMqtt = init.mqttArray[0].toObject()["server"].toString();
         prepareAndSendModbus(mqttIPAddress, mqttIPEntries, strOfMqtt, "set ip server of mqtt:");
         setUILabelInfoEachTIme(ui->mqttSl102Label);
         if (ui->mqttSl102Label->text().contains("FAIL")) {
             setUILabelInfo(ui->mqttSl102Label);
             return;
-        }
+         }
 
-        int numOfMqtt = init->mqttArray[0].toObject()["port"].toInt();
+        int numOfMqtt = init.mqttArray[0].toObject()["port"].toInt();
         prepareAndSendModbus(mqttPortAddress, mqttPortEntries, numOfMqtt, "set port of mqtt:");
         setUILabelInfoEachTIme(ui->mqttSl102Label);
         if (ui->mqttSl102Label->text().contains("FAIL")) {
@@ -245,7 +248,7 @@ void MainWindow::on_functionSl102StartPushButton_clicked()
             return;
         }
 
-        strOfMqtt = init->mqttArray[0].toObject()["pubtopical"].toString();
+        strOfMqtt = init.mqttArray[0].toObject()["pubtopical"].toString();
         prepareAndSendModbus(mqttTopicAddress, mqttTopicEntreis, strOfMqtt, "set publish topical of mqtt:");
         setUILabelInfoEachTIme(ui->mqttSl102Label);
         if (ui->mqttSl102Label->text().contains("FAIL")) {
@@ -253,7 +256,7 @@ void MainWindow::on_functionSl102StartPushButton_clicked()
             return;
         }
 
-        strOfMqtt = init->mqttArray[0].toObject()["subtipical"].toString();
+        strOfMqtt = init.mqttArray[0].toObject()["subtipical"].toString();
         prepareAndSendModbus(MQTTSubTopicAddress, MQTTSubTopicEntries, strOfMqtt, "set sublical topical of mqtt:");
         setUILabelInfoEachTIme(ui->mqttSl102Label);
         if (ui->mqttSl102Label->text().contains("FAIL")) {
@@ -261,7 +264,7 @@ void MainWindow::on_functionSl102StartPushButton_clicked()
             return;
         }
 
-        strOfMqtt = init->mqttArray[0].toObject()["clientid"].toString();
+        strOfMqtt = init.mqttArray[0].toObject()["clientid"].toString();
         prepareAndSendModbus(mqttClinetIDAddress, mqttClinetIDEntries, strOfMqtt, "set client id of mqtt:");
         setUILabelInfoEachTIme(ui->mqttSl102Label);
         if (ui->mqttSl102Label->text().contains("FAIL")) {
@@ -269,7 +272,7 @@ void MainWindow::on_functionSl102StartPushButton_clicked()
             return;
         }
 
-        strOfMqtt = init->mqttArray[0].toObject()["username"].toString();
+        strOfMqtt = init.mqttArray[0].toObject()["username"].toString();
         prepareAndSendModbus(mqttUserAddress, mqttUserEntries, strOfMqtt, "set username of mqtt:");
         setUILabelInfoEachTIme(ui->mqttSl102Label);
         if (ui->mqttSl102Label->text().contains("FAIL")) {
@@ -277,7 +280,7 @@ void MainWindow::on_functionSl102StartPushButton_clicked()
             return;
         }
 
-        strOfMqtt = init->mqttArray[0].toObject()["password"].toString();
+        strOfMqtt = init.mqttArray[0].toObject()["password"].toString();
         prepareAndSendModbus(mqttPassWordAddress, mqttPassWordEntries, strOfMqtt, "set password of mqtt:");
         setUILabelInfoEachTIme(ui->mqttSl102Label);
         if (ui->mqttSl102Label->text().contains("FAIL")) {
@@ -285,8 +288,8 @@ void MainWindow::on_functionSl102StartPushButton_clicked()
             return;
         }
 
-        numOfMqtt = init->mqttArray[0].toObject()["interval"].toInt();
-        prepareAndSendModbus(mqttPortAddress, mqttPortEntries, numOfMqtt, "set interval of mqtt:");
+        numOfMqtt = init.mqttArray[0].toObject()["interval"].toInt();
+        prepareAndSendModbus(mqttIntervalAddress, mqttIntervalEntries, numOfMqtt, "set interval of mqtt:");
         setUILabelInfoEachTIme(ui->mqttSl102Label);
         if (ui->mqttSl102Label->text().contains("FAIL")) {
             setUILabelInfo(ui->mqttSl102Label);
@@ -297,7 +300,7 @@ void MainWindow::on_functionSl102StartPushButton_clicked()
     }
 
     // led control
-    if (ui->ledControlSl102CheckBox->isChecked()){
+    if (ui->ledControlSl102CheckBox->isChecked()) {
         int valueLedControl = 1; // ON
 
         prepareAndSendModbus(controlTestOnAddress, OneEntry, valueLedControl, "set led on");
@@ -345,21 +348,26 @@ void MainWindow::on_functionSl102StartPushButton_clicked()
 
     // nb connect
     if (ui->nbConnectSl102CheckBox->isChecked()) {
-        int nbConnectValue = 1;
-        prepareAndSendModbus(NBConnTestAddress, OneEntry, nbConnectValue, "set nbiot on, please wait 30s before check ");
-        setUILabelInfoEachTIme(ui->nbConnectSl102Label);
-        if (ui->nbConnectSl102Label->text().contains("FAIL")) {
-            setUILabelInfo(ui->nbConnectSl102Label);
-            return;
-        }
-        QMessageBox::question(this, "NB Test", "Please wait 30s before check nb connection status");
-        for (int i = 0; i < 30; i++) {
-            int j = 30 - i;
-            QString msg = "Remaing time: " + QString::number(j) + "...";
-            ui->resultText->append(msg);
-            _sleep(1000);
-        }
+        // check SIM status
+        modbusBase->readRegisters(NBSIMStatus, OneEntry, modbusDevice, &(modbusBase->handleNBSIM));
 
+        if (modbusBase->flag) {
+            modbusBase->flag = 0;
+            int nbConnectValue = 1;
+            prepareAndSendModbus(NBConnTestAddress, OneEntry, nbConnectValue, "set nbiot on, please wait 30s before check ");
+            setUILabelInfoEachTIme(ui->nbConnectSl102Label);
+            if (ui->nbConnectSl102Label->text().contains("FAIL")) {
+                setUILabelInfo(ui->nbConnectSl102Label);
+                return;
+            }
+            QMessageBox::question(this, "NB Test", "Please wait before check nb connection status");
+            for (int i = 0; i < init.configArray[0].toObject()["nbDelayTime"].toInt(); i++) {
+                int j = init.configArray[0].toObject()["nbDelayTime"].toInt() - i;
+                QString msg = "Remaing time: " + QString::number(j) + "...";
+                ui->resultText->append(msg);
+                _sleep(1000);
+            }
+        }
         modbusBase->readRegisters(NBSIMStatus, OneEntry, modbusDevice, &(modbusBase->handleNBSTATUS));
         setUILabelInfoEachTIme(ui->nbConnectSl102Label);
         if (ui->nbConnectSl102Label->text().contains("FAIL")) {
@@ -381,4 +389,6 @@ void MainWindow::on_functionSl102StartPushButton_clicked()
             return;
         }
     }
+
+    on_savePushButton_clicked();
 }

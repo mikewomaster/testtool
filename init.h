@@ -16,6 +16,7 @@ public:
     void initEnvironmentJSON();
     QJsonArray cellularArray;
     QJsonArray mqttArray;
+    QJsonArray configArray;
     int Size;
 };
 

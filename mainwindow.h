@@ -69,7 +69,7 @@ private slots:
     void on_functionSl102StartPushButton_clicked();
 private:
     Ui::MainWindow *ui;
-    Init *init;
+    // Init *init;
     QVector<QString> serialInfoVector;
     ModbusBase *modbusBase;
     QModbusClient *modbusDevice; // also use as lm usb serial in lora test
