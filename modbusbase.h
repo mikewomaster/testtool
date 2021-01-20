@@ -41,6 +41,8 @@ private slots:
     void handleReadVersion();
     void handleReadIOValue();
     void PowerReadReady(int times);
+    void handleReadVoltage();
+    void handleReadAmper();
     void handleReadPowerFullValue();
     void handleReadPowerHalfValue();
     void handleReadPowerEmptyValue();

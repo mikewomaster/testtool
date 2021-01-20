@@ -134,6 +134,52 @@ void ModbusBase::handleReadAdjustValue()
     reply->deleteLater();
 }
 
+void ModbusBase::handleReadAmper()
+{
+    auto reply = qobject_cast<QModbusReply *>(sender());
+    if (!reply)
+        return;
+
+    if (reply->error() == QModbusDevice::NoError) {
+        const QModbusDataUnit unit = reply->result();
+        AdjustValue = unit.value(0);
+        ui->resultText->append("Read: " + QString::number(AdjustValue/100.0) + "A");
+        getMainWindow()->statusBar()->showMessage(tr("OK!"));
+    } else if (reply->error() == QModbusDevice::ProtocolError) {
+        getMainWindow()->statusBar()->showMessage(tr("Read response error: %1 (Mobus exception: 0x%2)").
+                                    arg(reply->errorString()).
+                                    arg(reply->rawResult().exceptionCode(), -1, 16), 5000);
+    } else {
+        getMainWindow()->statusBar()->showMessage(tr("Read response error: %1 (code: 0x%2)").
+                                    arg(reply->errorString()).
+                                    arg(reply->error(), -1, 16), 5000);
+    }
+    reply->deleteLater();
+}
+
+void ModbusBase::handleReadVoltage()
+{
+    auto reply = qobject_cast<QModbusReply *>(sender());
+    if (!reply)
+        return;
+
+    if (reply->error() == QModbusDevice::NoError) {
+        const QModbusDataUnit unit = reply->result();
+        AdjustValue = unit.value(0);
+        ui->resultText->append("Read: " + QString::number(AdjustValue/100.0) + "V");
+        getMainWindow()->statusBar()->showMessage(tr("OK!"));
+    } else if (reply->error() == QModbusDevice::ProtocolError) {
+        getMainWindow()->statusBar()->showMessage(tr("Read response error: %1 (Mobus exception: 0x%2)").
+                                    arg(reply->errorString()).
+                                    arg(reply->rawResult().exceptionCode(), -1, 16), 5000);
+    } else {
+        getMainWindow()->statusBar()->showMessage(tr("Read response error: %1 (code: 0x%2)").
+                                    arg(reply->errorString()).
+                                    arg(reply->error(), -1, 16), 5000);
+    }
+    reply->deleteLater();
+}
+
 void ModbusBase::PowerReadReady(int times)
 {
     auto reply = qobject_cast<QModbusReply *>(sender());
@@ -144,19 +190,20 @@ void ModbusBase::PowerReadReady(int times)
 
     if (reply->error() == QModbusDevice::NoError) {
         const QModbusDataUnit unit = reply->result();
-        ui->resultText->append("Read Power: " + QString::number(IOValue));
+        ui->resultText->append("Read Power: " + QString::number(unit.value(0)/100.0) + " W");
 
+        int powerUnit = unit.value(0) / 100.0;
         if (times == 1 && \
-            unit.value(0) >= init.configArray[0].toObject()["powerMin100"].toInt() && \
-            unit.value(0) <= init.configArray[0].toObject()["powerMax100"].toInt())
+            powerUnit >= init.configArray[0].toObject()["powerMin100"].toInt() && \
+            powerUnit <= init.configArray[0].toObject()["powerMax100"].toInt())
             ui->resultText->append("Read Full Power Success.");
         else if (times == 2 && \
-                 unit.value(0) >= init.configArray[0].toObject()["powerMin50"].toInt() && \
-                 unit.value(0) <= init.configArray[0].toObject()["powerMax50"].toInt())
+                 powerUnit >= init.configArray[0].toObject()["powerMin50"].toInt() && \
+                 powerUnit <= init.configArray[0].toObject()["powerMax50"].toInt())
             ui->resultText->append("Read Half Power Success.");
         else if (times == 3 && \
-                 unit.value(0) >= init.configArray[0].toObject()["powerMin0"].toInt() && \
-                 unit.value(0) <= init.configArray[0].toObject()["powerMax0"].toInt())
+                 powerUnit >= init.configArray[0].toObject()["powerMin0"].toInt() && \
+                 powerUnit <= init.configArray[0].toObject()["powerMax0"].toInt())
             ui->resultText->append("Read Empty Power Success.");
         else {
             ui->resultText->append("Read Power Fail, Please Check CH Hardware.");
@@ -287,13 +334,21 @@ void ModbusBase::handleNBRSSI()
     if (!reply)
         return;
 
+    Init init;
+
     if (reply->error() == QModbusDevice::NoError) {
         const QModbusDataUnit unit = reply->result();
-        int nbRSSI = unit.value(0);
-        QString msg = "NB Read RSSI Value" + QString::number(nbRSSI);
-        ui->resultText->append(msg);
-        flag = 0;
-        getMainWindow()->statusBar()->showMessage(tr("OK!"));
+        short nbRSSI = unit.value(0);
+
+        if (nbRSSI >= init.cellularArray[0].toObject()["rssiMin"].toInt()) {
+            QString msg = "NB Read RSSI Value " + QString::number(nbRSSI) +"dBm";
+            ui->resultText->append(msg);
+            flag = 0;
+            getMainWindow()->statusBar()->showMessage(tr("OK!"));
+        } else {
+            flag = 1;
+            ui->resultText->append("Read Fail. ");
+        }
     } else if (reply->error() == QModbusDevice::ProtocolError) {
         flag = 1;
         ui->resultText->append("Read Fail. ");

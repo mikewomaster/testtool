@@ -67,6 +67,8 @@ private slots:
     void on_stopPushButton_clicked();
     void on_finishedCheckBox_clicked();
     void on_functionSl102StartPushButton_clicked();
+    void on_setPushButton_clicked();
+
 private:
     Ui::MainWindow *ui;
     // Init *init;

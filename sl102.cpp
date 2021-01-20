@@ -51,12 +51,15 @@ void MainWindow::prepareAndSendModbus(int addr, int entry, QString cnt, QString 
 
 void MainWindow::prepareAndSendModbus(int addr, int entry, int val, QString msg)
 {
-    if (val) {
-        ui->resultText->append(msg);
-        QVector<quint16> valueToVector;
-        valueToVector.push_back(val);
-        modbusBase->writeRegisters(addr, entry, valueToVector, modbusDevice);
+
+    ui->resultText->append(msg);
+    QVector<quint16> valueToVector;
+    valueToVector.push_back(val);
+    for (int i = 0; i < entry - 1; i++) {
+        valueToVector.push_front(0); // confuse for big/little endian
     }
+
+    modbusBase->writeRegisters(addr, entry, valueToVector, modbusDevice);
     _sleep(2000);
 }
 
@@ -192,6 +195,140 @@ void MainWindow::on_functionSl102StartPushButton_clicked()
         ui->SNSl102LineEdit->clear();
     }
 
+    // 4. led control
+    if (ui->ledControlSl102CheckBox->isChecked()) {
+        ui->resultText->append("------------------");
+        int valueLedPercent = 100;
+        prepareAndSendModbus(controlTestOnAddress, OneEntry, valueLedPercent, "set led on");
+        setUILabelInfoEachTIme(ui->ledControlSl102Label);
+        if (ui->ledControlSl102Label->text().contains("FAIL")) {
+            setUILabelInfo(ui->ledControlSl102Label);
+            return;
+        }
+        ui->resultText->append("Please wait 5s for collecting power data...");
+        _sleep(6000);
+        modbusBase->readRegisters(EnergyPowerAddress, OneEntry, modbusDevice, &(modbusBase->handleReadPowerFullValue));
+        _sleep(2000);
+        modbusBase->readRegisters(EnergyVRMSAddress, OneEntry, modbusDevice, &(modbusBase->handleReadVoltage));
+        _sleep(2000);
+        modbusBase->readRegisters(EnergyIRMSAddress, OneEntry, modbusDevice, &(modbusBase->handleReadAmper));
+        _sleep(2000);
+
+        setUILabelInfoEachTIme(ui->ledControlSl102Label);
+        if (ui->ledControlSl102Label->text().contains("FAIL")) {
+            setUILabelInfo(ui->ledControlSl102Label);
+            return;
+        }
+        ui->resultText->append("------------------");
+
+        ui->resultText->append("------------------");
+        valueLedPercent = 50;
+        prepareAndSendModbus(controlTestOnAddress, OneEntry, valueLedPercent, "set led-half on");
+        setUILabelInfoEachTIme(ui->ledControlSl102Label);
+        if (ui->ledControlSl102Label->text().contains("FAIL")) {
+            setUILabelInfo(ui->ledControlSl102Label);
+            return;
+        }
+        ui->resultText->append("Please wait 5s for collecting power data...");
+        _sleep(6000);
+        modbusBase->readRegisters(EnergyPowerAddress, OneEntry, modbusDevice, &(modbusBase->handleReadPowerHalfValue));
+        _sleep(2000);
+        modbusBase->readRegisters(EnergyVRMSAddress, OneEntry, modbusDevice, &(modbusBase->handleReadVoltage));
+        _sleep(2000);
+        modbusBase->readRegisters(EnergyIRMSAddress, OneEntry, modbusDevice, &(modbusBase->handleReadAmper));
+        _sleep(2000);
+        setUILabelInfoEachTIme(ui->ledControlSl102Label);
+        if (ui->ledControlSl102Label->text().contains("FAIL")) {
+            setUILabelInfo(ui->ledControlSl102Label);
+            return;
+        }
+        ui->resultText->append("------------------");
+
+        ui->resultText->append("------------------");
+        valueLedPercent = 0;
+        prepareAndSendModbus(controlTestOnAddress, OneEntry, valueLedPercent, "set led off");
+        setUILabelInfoEachTIme(ui->ledControlSl102Label);
+        if (ui->ledControlSl102Label->text().contains("FAIL")) {
+            setUILabelInfo(ui->ledControlSl102Label);
+            return;
+        }
+        ui->resultText->append("Please wait 5s for collecting power data...");
+        _sleep(6000);
+        modbusBase->readRegisters(EnergyPowerAddress, OneEntry, modbusDevice, &(modbusBase->handleReadPowerEmptyValue));
+        _sleep(2000);
+        modbusBase->readRegisters(EnergyVRMSAddress, OneEntry, modbusDevice, &(modbusBase->handleReadVoltage));
+        _sleep(2000);
+        modbusBase->readRegisters(EnergyIRMSAddress, OneEntry, modbusDevice, &(modbusBase->handleReadAmper));
+        _sleep(2000);
+        setUILabelInfoEachTIme(ui->ledControlSl102Label);
+        if (ui->ledControlSl102Label->text().contains("FAIL")) {
+            setUILabelInfo(ui->ledControlSl102Label);
+            return;
+        }
+        ui->resultText->append("------------------");
+
+        setUILabelInfo(ui->ledControlSl102Label);
+    }
+
+    // 5. nb connect
+    if (ui->nbConnectSl102CheckBox->isChecked()) {
+        int nbConnectValue = 1;
+        prepareAndSendModbus(NBConnTestAddress, OneEntry, nbConnectValue, "set nbiot on, please wait before check ");
+        setUILabelInfoEachTIme(ui->nbConnectSl102Label);
+        if (ui->nbConnectSl102Label->text().contains("FAIL")) {
+            setUILabelInfo(ui->nbConnectSl102Label);
+            return;
+        }
+        QMessageBox::question(this, "NB Test", "Please wait before check nb connection status");
+
+        ui->resultText->append("");
+        for (int i = 0; i < init.configArray[0].toObject()["nbDelayTime"].toInt(); i++) {
+            int j = init.configArray[0].toObject()["nbDelayTime"].toInt() - i;
+            QString msg = "Remaing time: " + QString::number(j) + " ...";
+            ui->resultText->insertPlainText(msg);
+            _sleep(1000);
+
+            QTextCursor txc(ui->resultText->textCursor());
+            txc.movePosition(QTextCursor::StartOfLine);
+            txc.select(QTextCursor::LineUnderCursor);
+            txc.removeSelectedText();
+        }
+
+        modbusBase->readRegisters(NBSIMStatus, OneEntry, modbusDevice, &(modbusBase->handleNBSTATUS));
+        _sleep(3500);
+        setUILabelInfoEachTIme(ui->nbConnectSl102Label);
+        if (ui->nbConnectSl102Label->text().contains("FAIL")) {
+            setUILabelInfo(ui->nbConnectSl102Label);
+            return;
+        }
+
+        modbusBase->readRegisters(NBStatusAddress, OneEntry, modbusDevice, &(modbusBase->handleNBSIM));
+        _sleep(3500);
+        setUILabelInfoEachTIme(ui->nbConnectSl102Label);
+        if (ui->nbConnectSl102Label->text().contains("FAIL")) {
+            setUILabelInfo(ui->nbConnectSl102Label);
+            return;
+        }
+
+        modbusBase->readRegisters(NBRSSIAddress, OneEntry, modbusDevice, &(modbusBase->handleNBRSSI));
+        _sleep(3500);
+        setUILabelInfoEachTIme(ui->nbConnectSl102Label);
+        if (ui->nbConnectSl102Label->text().contains("FAIL")) {
+            setUILabelInfo(ui->nbConnectSl102Label);
+            return;
+        }
+
+        setUILabelInfo(ui->nbConnectSl102Label);
+    }
+
+    _sleep(5000);
+    on_savePushButton_clicked();
+}
+
+void MainWindow::on_setPushButton_clicked()
+{
+    Init init;
+
     // cellular config
     if (ui->cellularSl102CheckBox->isChecked()){
         QString strOfCellular = init.cellularArray[0].toObject()["apn"].toString();
@@ -231,7 +368,6 @@ void MainWindow::on_functionSl102StartPushButton_clicked()
 
     // mqtt config
     if (ui->mqttSl102CheckBox->isChecked()) {
-
         QString strOfMqtt = init.mqttArray[0].toObject()["server"].toString();
         prepareAndSendModbus(mqttIPAddress, mqttIPEntries, strOfMqtt, "set ip server of mqtt:");
         setUILabelInfoEachTIme(ui->mqttSl102Label);
@@ -256,7 +392,7 @@ void MainWindow::on_functionSl102StartPushButton_clicked()
             return;
         }
 
-        strOfMqtt = init.mqttArray[0].toObject()["subtipical"].toString();
+        strOfMqtt = init.mqttArray[0].toObject()["subtopical"].toString();
         prepareAndSendModbus(MQTTSubTopicAddress, MQTTSubTopicEntries, strOfMqtt, "set sublical topical of mqtt:");
         setUILabelInfoEachTIme(ui->mqttSl102Label);
         if (ui->mqttSl102Label->text().contains("FAIL")) {
@@ -288,8 +424,8 @@ void MainWindow::on_functionSl102StartPushButton_clicked()
             return;
         }
 
-        numOfMqtt = init.mqttArray[0].toObject()["interval"].toInt();
-        prepareAndSendModbus(mqttIntervalAddress, mqttIntervalEntries, numOfMqtt, "set interval of mqtt:");
+        int numOfInterval = init.mqttArray[0].toObject()["interval"].toInt();
+        prepareAndSendModbus(mqttIntervalAddress, mqttIntervalEntries, numOfInterval, "set interval of mqtt:");
         setUILabelInfoEachTIme(ui->mqttSl102Label);
         if (ui->mqttSl102Label->text().contains("FAIL")) {
             setUILabelInfo(ui->mqttSl102Label);
@@ -299,96 +435,6 @@ void MainWindow::on_functionSl102StartPushButton_clicked()
         setUILabelInfo(ui->mqttSl102Label);
     }
 
-    // led control
-    if (ui->ledControlSl102CheckBox->isChecked()) {
-        int valueLedControl = 1; // ON
-
-        prepareAndSendModbus(controlTestOnAddress, OneEntry, valueLedControl, "set led on");
-        setUILabelInfoEachTIme(ui->ledControlSl102Label);
-        if (ui->ledControlSl102Label->text().contains("FAIL")) {
-            setUILabelInfo(ui->ledControlSl102Label);
-            return;
-        }
-        modbusBase->readRegisters(EnergyPowerAddress, OneEntry, modbusDevice, &(modbusBase->handleReadPowerFullValue));
-        setUILabelInfoEachTIme(ui->ledControlSl102Label);
-        if (ui->ledControlSl102Label->text().contains("FAIL")) {
-            setUILabelInfo(ui->ledControlSl102Label);
-            return;
-        }
-
-
-        int valueLedPercent = 50;
-        prepareAndSendModbus(controlTestOuputAddress, OneEntry, valueLedPercent, "set led-half on");
-        setUILabelInfoEachTIme(ui->ledControlSl102Label);
-        if (ui->ledControlSl102Label->text().contains("FAIL")) {
-            setUILabelInfo(ui->ledControlSl102Label);
-            return;
-        }
-        modbusBase->readRegisters(controlTestOuputAddress, OneEntry, modbusDevice, &(modbusBase->handleReadPowerHalfValue));
-        setUILabelInfoEachTIme(ui->ledControlSl102Label);
-        if (ui->ledControlSl102Label->text().contains("FAIL")) {
-            setUILabelInfo(ui->ledControlSl102Label);
-            return;
-        }
-
-        valueLedControl = 0;
-        prepareAndSendModbus(controlTestOnAddress, OneEntry, valueLedControl, "set led off");
-        setUILabelInfoEachTIme(ui->ledControlSl102Label);
-        if (ui->ledControlSl102Label->text().contains("FAIL")) {
-            setUILabelInfo(ui->ledControlSl102Label);
-            return;
-        }
-        modbusBase->readRegisters(EnergyPowerAddress, OneEntry, modbusDevice, &(modbusBase->handleReadPowerEmptyValue));
-        setUILabelInfoEachTIme(ui->ledControlSl102Label);
-        if (ui->ledControlSl102Label->text().contains("FAIL")) {
-            setUILabelInfo(ui->ledControlSl102Label);
-            return;
-        }
-    }
-
-    // nb connect
-    if (ui->nbConnectSl102CheckBox->isChecked()) {
-        // check SIM status
-        modbusBase->readRegisters(NBSIMStatus, OneEntry, modbusDevice, &(modbusBase->handleNBSIM));
-
-        if (modbusBase->flag) {
-            modbusBase->flag = 0;
-            int nbConnectValue = 1;
-            prepareAndSendModbus(NBConnTestAddress, OneEntry, nbConnectValue, "set nbiot on, please wait 30s before check ");
-            setUILabelInfoEachTIme(ui->nbConnectSl102Label);
-            if (ui->nbConnectSl102Label->text().contains("FAIL")) {
-                setUILabelInfo(ui->nbConnectSl102Label);
-                return;
-            }
-            QMessageBox::question(this, "NB Test", "Please wait before check nb connection status");
-            for (int i = 0; i < init.configArray[0].toObject()["nbDelayTime"].toInt(); i++) {
-                int j = init.configArray[0].toObject()["nbDelayTime"].toInt() - i;
-                QString msg = "Remaing time: " + QString::number(j) + "...";
-                ui->resultText->append(msg);
-                _sleep(1000);
-            }
-        }
-        modbusBase->readRegisters(NBSIMStatus, OneEntry, modbusDevice, &(modbusBase->handleNBSTATUS));
-        setUILabelInfoEachTIme(ui->nbConnectSl102Label);
-        if (ui->nbConnectSl102Label->text().contains("FAIL")) {
-            setUILabelInfo(ui->nbConnectSl102Label);
-            return;
-        }
-
-        modbusBase->readRegisters(NBSIMStatus, OneEntry, modbusDevice, &(modbusBase->handleNBSIM));
-        setUILabelInfoEachTIme(ui->nbConnectSl102Label);
-        if (ui->nbConnectSl102Label->text().contains("FAIL")) {
-            setUILabelInfo(ui->nbConnectSl102Label);
-            return;
-        }
-
-        modbusBase->readRegisters(NBSIMStatus, OneEntry, modbusDevice, &(modbusBase->handleNBRSSI));
-        setUILabelInfoEachTIme(ui->nbConnectSl102Label);
-        if (ui->nbConnectSl102Label->text().contains("FAIL")) {
-            setUILabelInfo(ui->nbConnectSl102Label);
-            return;
-        }
-    }
-
+    _sleep(5000);
     on_savePushButton_clicked();
 }
