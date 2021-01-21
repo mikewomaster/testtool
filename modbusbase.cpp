@@ -347,17 +347,22 @@ void ModbusBase::handleNBRSSI()
             getMainWindow()->statusBar()->showMessage(tr("OK!"));
         } else {
             flag = 1;
-            ui->resultText->append("Read Fail. ");
+            QString messageFail = reply->errorString();
+            ui->resultText->append(messageFail);
         }
     } else if (reply->error() == QModbusDevice::ProtocolError) {
         flag = 1;
-        ui->resultText->append("Read Fail. ");
+        ui->resultText->append("Read Fail");
+        QString messageFail = reply->errorString();
+        ui->resultText->append(messageFail);
         getMainWindow()->statusBar()->showMessage(tr("Read response error: %1 (Mobus exception: 0x%2)").
                                     arg(reply->errorString()).
                                     arg(reply->rawResult().exceptionCode(), -1, 16), 5000);
     } else {
         flag = 1;
         ui->resultText->append("Read Fail");
+        QString messageFail = reply->errorString();
+        ui->resultText->append(messageFail);
         getMainWindow()->statusBar()->showMessage(tr("Read response error: %1 (code: 0x%2)").
                                     arg(reply->errorString()).
                                     arg(reply->error(), -1, 16), 5000);
