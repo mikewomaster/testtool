@@ -497,3 +497,15 @@ void MainWindow::on_finishedCheckBox_clicked()
         */
     }
 }
+
+void MainWindow::on_resetSL102PushButton_clicked()
+{
+    if (!modbusDevice)
+        return;
+
+    if (modbusDevice->state() == QModbusDevice::ConnectedState) {
+        modbusBase->writeRegisters(ResetEnableAddress, 1, modbusDevice);
+        _sleep(2000);
+        ui->resultText->append(tr("Reset Dua com"));
+    }
+}

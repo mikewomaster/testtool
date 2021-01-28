@@ -1399,7 +1399,7 @@
        <string>Set</string>
       </property>
      </widget>
-     <widget class="QWidget" name="">
+     <widget class="QWidget" name="layoutWidget">
       <property name="geometry">
        <rect>
         <x>20</x>
@@ -1470,6 +1470,19 @@
         </layout>
        </item>
       </layout>
+     </widget>
+     <widget class="QPushButton" name="resetSL102PushButton">
+      <property name="geometry">
+       <rect>
+        <x>270</x>
+        <y>490</y>
+        <width>80</width>
+        <height>20</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>Reset</string>
+      </property>
      </widget>
     </widget>
    </widget>

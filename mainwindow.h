@@ -69,6 +69,8 @@ private slots:
     void on_functionSl102StartPushButton_clicked();
     void on_setPushButton_clicked();
 
+    void on_resetSL102PushButton_clicked();
+
 private:
     Ui::MainWindow *ui;
     // Init *init;
