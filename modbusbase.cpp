@@ -212,10 +212,12 @@ void ModbusBase::PowerReadReady(int times)
 
         getMainWindow()->statusBar()->showMessage(tr("OK!"));
     } else if (reply->error() == QModbusDevice::ProtocolError) {
+        flag = 1;
         getMainWindow()->statusBar()->showMessage(tr("Read response error: %1 (Mobus exception: 0x%2)").
                                     arg(reply->errorString()).
                                     arg(reply->rawResult().exceptionCode(), -1, 16), 5000);
     } else {
+        flag = 1;
         getMainWindow()->statusBar()->showMessage(tr("Read response error: %1 (code: 0x%2)").
                                     arg(reply->errorString()).
                                     arg(reply->error(), -1, 16), 5000);

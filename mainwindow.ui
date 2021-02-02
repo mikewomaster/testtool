@@ -53,6 +53,12 @@
       <height>99999</height>
      </size>
     </property>
+    <property name="font">
+     <font>
+      <family>Arial</family>
+      <pointsize>14</pointsize>
+     </font>
+    </property>
    </widget>
    <widget class="QLabel" name="logLabel">
     <property name="geometry">
@@ -88,6 +94,12 @@
       <height>99999</height>
      </size>
     </property>
+    <property name="font">
+     <font>
+      <family>Arial</family>
+      <pointsize>14</pointsize>
+     </font>
+    </property>
     <property name="currentIndex">
      <number>3</number>
     </property>
@@ -100,8 +112,8 @@
        <rect>
         <x>10</x>
         <y>10</y>
-        <width>411</width>
-        <height>481</height>
+        <width>489</width>
+        <height>526</height>
        </rect>
       </property>
       <layout class="QVBoxLayout" name="verticalLayout_4">
@@ -717,7 +729,7 @@
        <rect>
         <x>10</x>
         <y>20</y>
-        <width>473</width>
+        <width>553</width>
         <height>261</height>
        </rect>
       </property>
@@ -1030,7 +1042,7 @@
         <x>20</x>
         <y>30</y>
         <width>381</width>
-        <height>24</height>
+        <height>32</height>
        </rect>
       </property>
       <layout class="QHBoxLayout" name="horizontalLayout_3">
@@ -1085,7 +1097,7 @@
        <rect>
         <x>20</x>
         <y>90</y>
-        <width>406</width>
+        <width>485</width>
         <height>82</height>
        </rect>
       </property>
@@ -1124,6 +1136,12 @@
            <verstretch>0</verstretch>
           </sizepolicy>
          </property>
+         <property name="font">
+          <font>
+           <family>Arial</family>
+           <pointsize>14</pointsize>
+          </font>
+         </property>
         </widget>
        </item>
        <item row="0" column="3">
@@ -1148,6 +1166,12 @@
        </item>
        <item row="1" column="1">
         <widget class="QLabel" name="label_16">
+         <property name="font">
+          <font>
+           <family>Arial</family>
+           <pointsize>14</pointsize>
+          </font>
+         </property>
          <property name="text">
           <string>SN:</string>
          </property>
@@ -1155,6 +1179,12 @@
        </item>
        <item row="0" column="1">
         <widget class="QLabel" name="modelNameLabel_3">
+         <property name="font">
+          <font>
+           <family>Arial</family>
+           <pointsize>14</pointsize>
+          </font>
+         </property>
          <property name="text">
           <string>Model Name:</string>
          </property>
@@ -1173,6 +1203,12 @@
            <width>100</width>
            <height>0</height>
           </size>
+         </property>
+         <property name="font">
+          <font>
+           <family>Arial</family>
+           <pointsize>14</pointsize>
+          </font>
          </property>
          <property name="editable">
           <bool>true</bool>
@@ -1202,7 +1238,7 @@
         <x>20</x>
         <y>20</y>
         <width>412</width>
-        <height>31</height>
+        <height>32</height>
        </rect>
       </property>
       <layout class="QHBoxLayout" name="horizontalLayout_23">
@@ -1226,13 +1262,26 @@
            <height>16777215</height>
           </size>
          </property>
+         <property name="font">
+          <font>
+           <family>Arial</family>
+           <pointsize>14</pointsize>
+          </font>
+         </property>
          <property name="text">
           <string>COM:</string>
          </property>
         </widget>
        </item>
        <item>
-        <widget class="QComboBox" name="serialSl102ComboBox"/>
+        <widget class="QComboBox" name="serialSl102ComboBox">
+         <property name="font">
+          <font>
+           <family>Arial</family>
+           <pointsize>14</pointsize>
+          </font>
+         </property>
+        </widget>
        </item>
        <item>
         <spacer name="horizontalSpacer_7">
@@ -1258,6 +1307,12 @@
            <verstretch>0</verstretch>
           </sizepolicy>
          </property>
+         <property name="font">
+          <font>
+           <family>Arial</family>
+           <pointsize>14</pointsize>
+          </font>
+         </property>
          <property name="text">
           <string>Connect</string>
          </property>
@@ -1281,6 +1336,12 @@
           <widget class="QCheckBox" name="cellularSl102CheckBox">
            <property name="enabled">
             <bool>true</bool>
+           </property>
+           <property name="font">
+            <font>
+             <family>Arial</family>
+             <pointsize>14</pointsize>
+            </font>
            </property>
            <property name="text">
             <string>Cellular Configure</string>
@@ -1315,6 +1376,12 @@
              <height>0</height>
             </size>
            </property>
+           <property name="font">
+            <font>
+             <family>Arial</family>
+             <pointsize>14</pointsize>
+            </font>
+           </property>
            <property name="text">
             <string>MQTT Configure</string>
            </property>
@@ -1346,6 +1413,12 @@
       <layout class="QHBoxLayout" name="horizontalLayout_25">
        <item>
         <widget class="QLabel" name="label_15">
+         <property name="font">
+          <font>
+           <family>Arial</family>
+           <pointsize>14</pointsize>
+          </font>
+         </property>
          <property name="text">
           <string>Firmware:</string>
          </property>
@@ -1353,6 +1426,12 @@
        </item>
        <item>
         <widget class="QLineEdit" name="versionSl102LineEdit">
+         <property name="font">
+          <font>
+           <family>Arial</family>
+           <pointsize>14</pointsize>
+          </font>
+         </property>
          <property name="readOnly">
           <bool>true</bool>
          </property>
@@ -1377,10 +1456,16 @@
       <property name="geometry">
        <rect>
         <x>370</x>
-        <y>330</y>
+        <y>320</y>
         <width>80</width>
-        <height>20</height>
+        <height>31</height>
        </rect>
+      </property>
+      <property name="font">
+       <font>
+        <family>Arial</family>
+        <pointsize>14</pointsize>
+       </font>
       </property>
       <property name="text">
        <string>Start</string>
@@ -1392,8 +1477,14 @@
         <x>370</x>
         <y>490</y>
         <width>80</width>
-        <height>20</height>
+        <height>31</height>
        </rect>
+      </property>
+      <property name="font">
+       <font>
+        <family>Arial</family>
+        <pointsize>14</pointsize>
+       </font>
       </property>
       <property name="text">
        <string>Set</string>
@@ -1403,7 +1494,7 @@
       <property name="geometry">
        <rect>
         <x>20</x>
-        <y>200</y>
+        <y>190</y>
         <width>391</width>
         <height>121</height>
        </rect>
@@ -1421,6 +1512,12 @@
              <width>109</width>
              <height>0</height>
             </size>
+           </property>
+           <property name="font">
+            <font>
+             <family>Arial</family>
+             <pointsize>14</pointsize>
+            </font>
            </property>
            <property name="text">
             <string>LED Control Test</string>
@@ -1452,6 +1549,12 @@
              <height>0</height>
             </size>
            </property>
+           <property name="font">
+            <font>
+             <family>Arial</family>
+             <pointsize>14</pointsize>
+            </font>
+           </property>
            <property name="text">
             <string>NB Connect Test</string>
            </property>
@@ -1477,8 +1580,14 @@
         <x>270</x>
         <y>490</y>
         <width>80</width>
-        <height>20</height>
+        <height>31</height>
        </rect>
+      </property>
+      <property name="font">
+       <font>
+        <family>Arial</family>
+        <pointsize>14</pointsize>
+       </font>
       </property>
       <property name="text">
        <string>Reset</string>
@@ -1492,12 +1601,18 @@
       <x>730</x>
       <y>610</y>
       <width>168</width>
-      <height>22</height>
+      <height>32</height>
      </rect>
     </property>
     <layout class="QHBoxLayout" name="horizontalLayout_4">
      <item>
       <widget class="QPushButton" name="clearPushButton">
+       <property name="font">
+        <font>
+         <family>Arial</family>
+         <pointsize>14</pointsize>
+        </font>
+       </property>
        <property name="text">
         <string>Clear</string>
        </property>
@@ -1505,6 +1620,12 @@
      </item>
      <item>
       <widget class="QPushButton" name="savePushButton">
+       <property name="font">
+        <font>
+         <family>Arial</family>
+         <pointsize>14</pointsize>
+        </font>
+       </property>
        <property name="text">
         <string>Save</string>
        </property>
@@ -1519,7 +1640,7 @@
      <x>0</x>
      <y>0</y>
      <width>927</width>
-     <height>22</height>
+     <height>23</height>
     </rect>
    </property>
   </widget>

@@ -209,10 +209,27 @@ void MainWindow::on_functionSl102StartPushButton_clicked()
         _sleep(6000);
         modbusBase->readRegisters(EnergyPowerAddress, OneEntry, modbusDevice, &(modbusBase->handleReadPowerFullValue));
         _sleep(2000);
+        setUILabelInfoEachTIme(ui->ledControlSl102Label);
+        if (ui->ledControlSl102Label->text().contains("FAIL")) {
+            setUILabelInfo(ui->ledControlSl102Label);
+            return;
+        }
+
         modbusBase->readRegisters(EnergyVRMSAddress, OneEntry, modbusDevice, &(modbusBase->handleReadVoltage));
         _sleep(2000);
+        setUILabelInfoEachTIme(ui->ledControlSl102Label);
+        if (ui->ledControlSl102Label->text().contains("FAIL")) {
+            setUILabelInfo(ui->ledControlSl102Label);
+            return;
+        }
+
         modbusBase->readRegisters(EnergyIRMSAddress, OneEntry, modbusDevice, &(modbusBase->handleReadAmper));
         _sleep(2000);
+        setUILabelInfoEachTIme(ui->ledControlSl102Label);
+        if (ui->ledControlSl102Label->text().contains("FAIL")) {
+            setUILabelInfo(ui->ledControlSl102Label);
+            return;
+        }
 
         setUILabelInfoEachTIme(ui->ledControlSl102Label);
         if (ui->ledControlSl102Label->text().contains("FAIL")) {
