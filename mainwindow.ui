@@ -101,7 +101,7 @@
      </font>
     </property>
     <property name="currentIndex">
-     <number>3</number>
+     <number>0</number>
     </property>
     <widget class="QWidget" name="tab">
      <attribute name="title">
@@ -389,6 +389,11 @@
              <item>
               <property name="text">
                <string>LM200-900-TH</string>
+              </property>
+             </item>
+             <item>
+              <property name="text">
+               <string>LR140-900</string>
               </property>
              </item>
              <item>

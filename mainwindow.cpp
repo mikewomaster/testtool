@@ -37,12 +37,13 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(this, &MainWindow::IOAdjustSignal, this, &MainWindow::IOAdjustSlot);
     ui->modelNameComBox->setCurrentIndex(3);
 
-    ui->tabWidget->setTabEnabled(0, false);
-    ui->tabWidget->setTabEnabled(1, false);
-    ui->tabWidget->setTabEnabled(2, false);
+    // ui->tabWidget->setTabEnabled(0, false);
+    // ui->tabWidget->setTabEnabled(1, false);
+    // ui->tabWidget->setTabEnabled(2, false);
+    ui->tabWidget->setTabEnabled(3, false);
     ui->tabWidget->setStyleSheet("QTabBar::tab:disabled {width: 0; color: transparent;}");
 
-    setWindowTitle("v3.0.0");
+    setWindowTitle("v2.1.0");
 }
 
 MainWindow::~MainWindow()

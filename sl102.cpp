@@ -104,6 +104,10 @@ void MainWindow::on_functionSl102StartPushButton_clicked()
     QString StrCurrentTime = time.toString("yyyy-MM-dd hh:mm:ss ddd");
     ui->resultText->append(StrCurrentTime);
 
+    if (modbusDevice->state() != QModbusDevice::ConnectedState) {
+        ui->resultText->append("Please Connect Firlstly!!!");
+        return;
+    }
     /*
      * 1. reset
     */
