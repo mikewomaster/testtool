@@ -97,7 +97,7 @@
     <property name="font">
      <font>
       <family>Arial</family>
-      <pointsize>14</pointsize>
+      <pointsize>9</pointsize>
      </font>
     </property>
     <property name="currentIndex">
@@ -734,7 +734,7 @@
        <rect>
         <x>10</x>
         <y>20</y>
-        <width>553</width>
+        <width>481</width>
         <height>261</height>
        </rect>
       </property>
