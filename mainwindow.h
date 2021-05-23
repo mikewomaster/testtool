@@ -44,10 +44,15 @@ private:
     void SecondTest();
     void prepareAndSendModbus(int addr, int entry, QString cnt, QString msg);
     void prepareAndSendModbus(int addr, int entry, int cnt, QString msg);
-    void setUILabelInfo(QLabel*);
+    int setUILabelInfo(QLabel*);
     void setUILabelInfoEachTIme(QLabel *);
+    void sl102Connect();
+    void mbusTestStart();
+    void mbusLoadDefaultStart();
+    void mbusCheckStart();
 signals:
     void IOAdjustSignal(adjustIOStruct&);
+
 private slots:
     void serialAlarmTask();
     void on_connectPushButton_clicked();
@@ -68,9 +73,9 @@ private slots:
     void on_finishedCheckBox_clicked();
     void on_functionSl102StartPushButton_clicked();
     void on_setPushButton_clicked();
-
     void on_resetSL102PushButton_clicked();
-
+    void on_mbusModeComboBox_currentIndexChanged(int index);
+    void on_testOperationCheckBox_stateChanged(int arg1);
 private:
     Ui::MainWindow *ui;
     // Init *init;

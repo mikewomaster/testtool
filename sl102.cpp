@@ -12,13 +12,8 @@
 #include <QMessageBox>
 #include <QJsonObject>
 
-void MainWindow::on_connectSl102PushButton_clicked()
+void MainWindow::sl102Connect()
 {
-    if (!modbusDevice)
-        return;
-
-    statusBar()->clearMessage();
-
     if (modbusDevice->state() == QModbusDevice::ConnectedState) {
             modbusDevice->disconnectDevice();
             ui->connectSl102PushButton->setText(tr("Connect"));
@@ -71,17 +66,19 @@ void MainWindow::setUILabelInfoEachTIme(QLabel * lb)
     }
 }
 
-void MainWindow::setUILabelInfo(QLabel* lb)
+int MainWindow::setUILabelInfo(QLabel* lb)
 {
     if (checkFlag(modbusBase->flag) == false) {
         canNotFixFlag = FallFlag;
         modbusBase->flag = 0;
         QString msg = QString("<font color=\"#FF0000\"> %1 </font>\n").arg("FAIL");
         lb->setText(msg);
-        return;
+        return 1;
     }
+
     QString msg = QString("<font color=\"#2E8B57\"> %1 </font>\n").arg("PASS");
     lb->setText(msg);
+    return 0;
 }
 
 void MainWindow::on_functionSl102StartPushButton_clicked()

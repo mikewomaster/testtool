@@ -84,7 +84,7 @@
 #define NBEnableAddress (821 - 1)
 #define NBEnableEntries 1
 
-#define NBConnTestAddress (4097 - 1)
+#define NBConnTestAddress (4106 - 1)
 #define NBConnTestEntries 1
 
 #define EightEntries 8
@@ -154,5 +154,40 @@
 
 #define controlTestOnAddress (803 - 1)
 #define controlTestOuputAddress (804 - 1)
+
+//M-Bus
+#define systemModeAddress (14 - 1)
+#define mBusVoltageAddress (12 - 1)
+
+#define cellularAPNAddress (4001 - 1)
+#define cellularUserName (4017 - 1)
+#define cellularPassWord (4025 - 1)
+#define cellularPLMN (4034 - 1)
+
+
+#define meterModelBaseAddress (301 - 1)
+#define addressModeBaseAddress (309 - 1)
+#define meterAddressBaseAddress (310 - 1)
+
+#define meterTagBaseAddress (318 - 1)
+#define meterIdBaseAddress (398 - 1)
+#define meterMagnitudeBaseAddress (418 - 1)
+
+#define meterStatus (11 - 1)
+
+#define meterPollStart (5000 - 1)
+#define meterPollSN (5001 - 1)
+#define meterPollAdressMode (5009 - 1)
+#define meterPollPriAddress (5010 - 1)
+#define meterPollSecAddress (5011 - 1)
+#define meterPollStatus (5019 - 1)
+#define meterPollManu (5020 - 1)
+#define meterPollType (5028 - 1)
+#define meterPollVersion (5029 - 1)
+#define meterPollBaudRate (5030 - 1)
+#define meterPollAlarmCode (5031 - 1)
+#define meterPollChannel (5032 - 1)
+
+#define meterPollGap (271)
 
 #endif // MODBUSTABLE_H

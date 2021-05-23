@@ -12,6 +12,7 @@ public:
     int powerFull;
     int powerHalf;
     int powerEmpty;
+    short state;
 };
 
 #endif // COMPAREVALUE_H

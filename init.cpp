@@ -9,7 +9,7 @@ Init::Init()
 #define BUG_ON 0
 void Init::initEnvironmentJSON()
 {
-    QFile file("config.json");
+    QFile file("mbusTest.json");
     if(!file.open(QIODevice::ReadWrite)) {
         QMessageBox::information(nullptr, "File", "Can't find config.json.");
         return;
@@ -25,17 +25,16 @@ void Init::initEnvironmentJSON()
         cellularArray =  obj["cellular"].toArray();
         mqttArray = obj["mqtt"].toArray();
         configArray = obj["config"].toArray();
-
+        meterArray = obj["meter"].toArray();
     #if BUG_ON
         qDebug() << mqttArray[0].toObject()["username"].toString();
         qDebug() << mqttArray[0].toObject()["password"].toString();
         qDebug() << mqttArray[0].toObject()["port"].toInt();
 
-        qDebug() << cellularArray[0].toObject()["username"].toString();
-        qDebug() << cellularArray[0].toObject()["password"].toString();
-        qDebug() << mqttArray[0].toObject()["username"].toString();
-        qDebug() << mqttArray[0].toObject()["password"].toString();
-        qDebug() << mqttArray[0].toObject()["port"].toInt();
+        qDebug() << cellularArray[1].toObject()["username"].toString();
+        qDebug() << cellularArray[1].toObject()["password"].toString();
+
+        qDebug() << QString::number(cellularArray.size());
 
         for(int i = 0; i < Array.count(); i++) {
            QJsonObject arrObj= Array[i].toObject();

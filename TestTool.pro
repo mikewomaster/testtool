@@ -30,7 +30,10 @@ SOURCES += \
     modbus.cpp \
     modbusbase.cpp \
     comparevalue.cpp \
-    sl102.cpp
+    sl102.cpp \
+    mbus.cpp \
+    mbusload.cpp \
+    mbuscheck.cpp
 
 HEADERS += \
         mainwindow.h \

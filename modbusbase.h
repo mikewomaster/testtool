@@ -26,6 +26,7 @@ public:
     int IOValue;
     int AdjustValue;
     bool GoldenSampleCheck;
+    bool mbusCellularStatus;
 
     void writeRegisters(int, int, QModbusClient *);
     void writeRegisters(int, int, QString, QModbusClient *);
@@ -51,6 +52,10 @@ private slots:
     void handleNBSIM();
     void handleNBRSSI();
     void handleNBSTATUS();
+    void handleReadMode();
+    void handleReadBatteryVoltage();
+    void handleMeterPoll();
+    void handleMeterPollStatus();
 };
 
 #endif // MODBUSWRITEBASE_H

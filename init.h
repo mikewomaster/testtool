@@ -17,6 +17,7 @@ public:
     QJsonArray cellularArray;
     QJsonArray mqttArray;
     QJsonArray configArray;
+    QJsonArray meterArray;
     int Size;
 };
 
