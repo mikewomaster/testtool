@@ -25,8 +25,8 @@ void MainWindow::sl102Connect()
             modbusDevice->setConnectionParameter(QModbusDevice::SerialDataBitsParameter,QSerialPort::Data8);
             modbusDevice->setConnectionParameter(QModbusDevice::SerialParityParameter,QSerialPort::NoParity);
             modbusDevice->setConnectionParameter(QModbusDevice::SerialStopBitsParameter,QSerialPort::OneStop);
-            modbusDevice->setTimeout(1000);
-            modbusDevice->setNumberOfRetries(1);
+            modbusDevice->setTimeout(3000);
+            modbusDevice->setNumberOfRetries(0);
             if (modbusDevice->connectDevice())
                 ui->connectSl102PushButton->setText(tr("Disconnect"));
     }

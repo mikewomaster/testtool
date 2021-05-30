@@ -1,0 +1,32 @@
+{
+  "company": "WoMaster",
+  "cellular": [
+    {
+      "apn": "cmnbiot",
+      "username": "womaster",
+      "password": "123456",
+      "plmn": "test",
+      "nbCheckTime": 60,
+      "nbDelayTime":600,
+    }
+  ],
+  "mqtt": [
+    {
+      "server": "127.0.0.1",
+      "port": 8881,
+      "pubtopical": "/hello/",
+      "subtopical": "/test/1234",
+      "clientid": "test",
+      "username": "womaster123",
+      "password": "654321",
+      "interval": 15
+    }
+  ],
+  "meter": [
+    {
+      "model": "hy",
+      "addressModel": 1,
+      "address":  1
+    }
+  ]
+}

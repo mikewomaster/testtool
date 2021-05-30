@@ -56,6 +56,12 @@ private slots:
     void handleReadBatteryVoltage();
     void handleMeterPoll();
     void handleMeterPollStatus();
+    void handleSerialReadReady();
+    void hanleCellularCheckReadReady();
+    void handleMqttCheckNumberReadReady();
+    void handleMqttCheckStringReadReady();
+    void handleMeterReadReady();
+    void handleMeterTagReadReady();
 };
 
 #endif // MODBUSWRITEBASE_H

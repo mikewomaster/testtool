@@ -1377,12 +1377,12 @@
          </item>
          <item>
           <property name="text">
-           <string>Test</string>
+           <string>Set</string>
           </property>
          </item>
          <item>
           <property name="text">
-           <string>Set</string>
+           <string>Test</string>
           </property>
          </item>
         </widget>
@@ -1743,7 +1743,7 @@
        </item>
       </layout>
      </widget>
-     <widget class="QWidget" name="">
+     <widget class="QWidget" name="layoutWidget">
       <property name="geometry">
        <rect>
         <x>10</x>
@@ -1769,7 +1769,7 @@
        </item>
       </layout>
      </widget>
-     <widget class="QWidget" name="">
+     <widget class="QWidget" name="layoutWidget">
       <property name="geometry">
        <rect>
         <x>11</x>
@@ -1795,7 +1795,7 @@
        </item>
       </layout>
      </widget>
-     <widget class="QWidget" name="">
+     <widget class="QWidget" name="layoutWidget">
       <property name="geometry">
        <rect>
         <x>11</x>

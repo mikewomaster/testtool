@@ -12,12 +12,14 @@
 class Init
 {
 public:
-    Init();
-    void initEnvironmentJSON();
+    Init(short type = 0);
+    void initEnvironmentJSON(short type = 0);
     QJsonArray cellularArray;
     QJsonArray mqttArray;
     QJsonArray configArray;
     QJsonArray meterArray;
+    QJsonArray meterTagArray;
+    QJsonArray mbusArray;
     int Size;
 };
 

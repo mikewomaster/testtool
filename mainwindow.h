@@ -33,7 +33,7 @@ public:
 private:
     void serialAlarmInit();
     void initModbusSlave();
-    void _sleep(unsigned int = 1200);
+    void _sleep(unsigned int = 2000);
     bool checkFlag(int);
     void setBitMapValue(QVector<quint16>&);
     void checkIO(QString ,int, int,QModbusClient*, int, QModbusClient*, int );
@@ -48,7 +48,20 @@ private:
     void setUILabelInfoEachTIme(QLabel *);
     void sl102Connect();
     void mbusTestStart();
+
+    int mbusDefault(Init);
+    int cellularDefault(Init);
+    int mqttDefault(Init);
+    int mbusMeterDefault(Init);
+    QVector<quint16> meterHeadModbusUnit(QString, int , quint16 , QString , int);
+    int mbusMeterTagDefault(Init);
     void mbusLoadDefaultStart();
+
+    int mbusSerialCheck();
+    int mbusCellularCheck();
+    int mbusMqttCheck();
+    int mbusMeterCheck();
+    int mbusMeterTagCheck();
     void mbusCheckStart();
 signals:
     void IOAdjustSignal(adjustIOStruct&);
@@ -75,7 +88,10 @@ private slots:
     void on_setPushButton_clicked();
     void on_resetSL102PushButton_clicked();
     void on_mbusModeComboBox_currentIndexChanged(int index);
-    void on_testOperationCheckBox_stateChanged(int arg1);
+    void on_mbusPushButton_clicked();
+
+    void on_testOperationCheckBox_clicked();
+
 private:
     Ui::MainWindow *ui;
     // Init *init;

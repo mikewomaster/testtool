@@ -13,6 +13,11 @@ void ModbusBase::writeRegisters(int addr, int num, QVector<quint16> newValues, Q
     if (!modbusDevice)
         return;
 
+    if (modbusDevice->state() == QModbusDevice::UnconnectedState ) {
+        flag = 1;
+        return;
+    }
+
     QModbusDataUnit writeUnit = QModbusDataUnit(QModbusDataUnit::HoldingRegisters, addr, num);
 
     writeUnit.setValues(newValues);
@@ -80,6 +85,8 @@ void ModbusBase::writeRegisters(int addr, int num, QString str, QModbusClient *m
     // statusBar()->clearMessage();
 
     QModbusDataUnit writeUnit = QModbusDataUnit(QModbusDataUnit::HoldingRegisters, addr, num);
+
+    ui->resultText->append(str);
 
     writeUnit.setValues(values);
     if (auto *reply = modbusDevice->sendWriteRequest(writeUnit, 1)) {
@@ -247,6 +254,8 @@ void ModbusBase::handleNBSIM()
     if (!reply)
         return;
 
+    ui->resultText->append(QString::number(reply->result().value(0)));
+
     if (reply->error() == QModbusDevice::NoError) {
         const QModbusDataUnit unit = reply->result();
         int simStatus = unit.value(0);
@@ -340,11 +349,11 @@ void ModbusBase::handleMeterPollStatus()
 
         if (status == 0) {
             ui->resultText->append("Meter Status OK");
-            flag = 1;
+            flag = 0;
         }
         else if (status == 1) {
             ui->resultText->append("Meter Parase Error");
-            flag = 0;
+            flag = 1;
         }
         else if (status == 2) {
             ui->resultText->append("CELLULAR TimeOut");
@@ -496,6 +505,14 @@ void ModbusBase::writeRegisters(int addr, int val, QModbusClient *modbusDevice)
     QModbusDataUnit writeUnit = QModbusDataUnit(QModbusDataUnit::HoldingRegisters, addr, 1);
 
     writeUnit.setValue(0, val);
+
+    if (modbusDevice->state() == QModbusDevice::UnconnectedState ) {
+        flag = 1;
+        return;
+    }
+
+    ui->resultText->append("set value: " + QString::number(val));
+
     if (auto *reply = modbusDevice->sendWriteRequest(writeUnit, 1)) {
         if (!reply->isFinished()) {
             connect(reply, &QModbusReply::finished, this, [this, reply]() {
@@ -741,6 +758,14 @@ void ModbusBase::handleSNGoldenSample()
 
 void ModbusBase::readRegisters(int addr, int num, int id, QModbusClient *modbusDevice, void (ModbusBase::*fn)())
 {
+    if (!modbusDevice)
+        return;
+
+    if (modbusDevice->state() == QModbusDevice::UnconnectedState ) {
+        flag = 1;
+        return;
+    }
+
     QModbusDataUnit readUnit = QModbusDataUnit(QModbusDataUnit::HoldingRegisters, addr, num);
 
     if (auto *reply = modbusDevice->sendReadRequest(readUnit, id)) {
@@ -756,6 +781,14 @@ void ModbusBase::readRegisters(int addr, int num, int id, QModbusClient *modbusD
 
 void ModbusBase::readRegisters(int addr, int num, QModbusClient *modbusDevice, void (ModbusBase::*fn)())
 {
+    if (!modbusDevice)
+        return;
+
+    if (modbusDevice->state() == QModbusDevice::UnconnectedState ) {
+        flag = 1;
+        return;
+    }
+
     QModbusDataUnit readUnit = QModbusDataUnit(QModbusDataUnit::HoldingRegisters, addr, num);
 
     if (auto *reply = modbusDevice->sendReadRequest(readUnit, 1)) {

@@ -1,15 +1,21 @@
 #include "init.h"
 #include "para.h"
 
-Init::Init()
+Init::Init(short type)
 {
-    initEnvironmentJSON();
+    initEnvironmentJSON(type);
 }
 
 #define BUG_ON 0
-void Init::initEnvironmentJSON()
+void Init::initEnvironmentJSON(short type)
 {
-    QFile file("mbusTest.json");
+    QFile file;
+
+    if (type)
+        file.setFileName("mbusDefault.json");
+    else
+        file.setFileName("mbusTest.json");
+
     if(!file.open(QIODevice::ReadWrite)) {
         QMessageBox::information(nullptr, "File", "Can't find config.json.");
         return;
@@ -26,6 +32,8 @@ void Init::initEnvironmentJSON()
         mqttArray = obj["mqtt"].toArray();
         configArray = obj["config"].toArray();
         meterArray = obj["meter"].toArray();
+        mbusArray = obj["mbus"].toArray();
+        meterTagArray = obj["meterTag"].toArray();
     #if BUG_ON
         qDebug() << mqttArray[0].toObject()["username"].toString();
         qDebug() << mqttArray[0].toObject()["password"].toString();

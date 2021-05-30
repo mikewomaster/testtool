@@ -75,7 +75,7 @@
 #define NBPLMNAddress (4034 - 1)
 #define NBPLMNEntries 3
 
-#define NBStatusAddress (5001 - 1)
+#define NBStatusAddress (4105 - 1)
 #define NBStatusEntries 1
 
 #define NBIPAddress (5002 - 1)
@@ -164,6 +164,7 @@
 #define cellularPassWord (4025 - 1)
 #define cellularPLMN (4034 - 1)
 
+#define meterGap 200
 
 #define meterModelBaseAddress (301 - 1)
 #define addressModeBaseAddress (309 - 1)
@@ -189,5 +190,7 @@
 #define meterPollChannel (5032 - 1)
 
 #define meterPollGap (271)
+
+#define mbusStart (1 - 1)
 
 #endif // MODBUSTABLE_H

@@ -1,0 +1,62 @@
+{
+  "company": "WoMaster",
+  "mbus": [
+    {
+      "baudrate": 9600,
+      "databits": 8,
+      "parity": "no",
+      "stopbits": 1,
+      "interval": 15
+    }
+  ],
+  "cellular": [
+    {
+      "apn": "cmnbiot",
+      "username": "womaster",
+      "password": "123456",
+      "plmn": "test"
+    }
+  ],
+  "mqtt": [
+    {
+      "server": "127.0.0.1",
+      "port": 8881,
+      "pubtopical": "/hello/",
+      "subtopical": "/test/1234",
+      "clientid": "test",
+      "username": "womaster123",
+      "password": "654321",
+      "interval": 15
+    }
+  ],
+  "meter": [
+    {
+      "number": 1,
+      "model": "hy",
+      "addressModel": "primary",
+      "address": "123"
+    },
+    {
+      "number": 2,
+      "model": "hy2",
+      "addressModel": "primary2",
+      "address": "1"
+    }
+  ],
+  "meterTag": [
+    {
+      "numberOfMeter": 1,
+      "numberOfTag": 1,
+      "attributeName": "test",
+      "dataIndex": 1,
+      "magnitude": "xx"
+    },
+    {
+      "numberOfMeter": 1,
+      "numberOfTag": 2,
+      "attributeName": "test2",
+      "dataIndex": 2,
+      "magnitude": "xx2"
+    }
+  ]
+}

@@ -42,8 +42,9 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->tabWidget->setTabEnabled(2, false);
     ui->tabWidget->setTabEnabled(3, false);
     ui->tabWidget->setStyleSheet("QTabBar::tab:disabled {width: 0; color: transparent;}");
+    ui->mqttTestCheckBox->setVisible(false);
 
-    setWindowTitle("v3.0.0");
+    setWindowTitle("mbus product test tool");
 }
 
 MainWindow::~MainWindow()
@@ -105,8 +106,8 @@ void MainWindow::on_connectPushButton_clicked()
             modbusDevice->setConnectionParameter(QModbusDevice::SerialDataBitsParameter,QSerialPort::Data8);
             modbusDevice->setConnectionParameter(QModbusDevice::SerialParityParameter,QSerialPort::NoParity);
             modbusDevice->setConnectionParameter(QModbusDevice::SerialStopBitsParameter,QSerialPort::OneStop);
-            modbusDevice->setTimeout(1000);
-            modbusDevice->setNumberOfRetries(1);
+            modbusDevice->setTimeout(3000);
+            modbusDevice->setNumberOfRetries(0);
             if (modbusDevice->connectDevice())
                 ui->connectPushButton->setText(tr("Disconnect"));
 
@@ -142,7 +143,7 @@ void MainWindow::on_connectGoldenPushButton_clicked()
             modbusGoldenDevice->setConnectionParameter(QModbusDevice::SerialParityParameter,QSerialPort::NoParity);
             modbusGoldenDevice->setConnectionParameter(QModbusDevice::SerialStopBitsParameter,QSerialPort::OneStop);
             modbusGoldenDevice->setTimeout(1000);
-            modbusGoldenDevice->setNumberOfRetries(1);
+            modbusGoldenDevice->setNumberOfRetries(0);
             if (modbusGoldenDevice->connectDevice()) {
                 ui->connectGoldenPushButton->setText(tr("Disconnect"));
                 ui->connectGoldenPushButton->setDisabled(true);
@@ -257,7 +258,7 @@ void MainWindow::_sleep(unsigned int msec)
 bool MainWindow::checkFlag(int flag)
 {
     if (flag) {
-        QString msg = QString("<font color=\"#FF0000\"> %1 </font>\n").arg("!!!STOP!!!");
+        QString msg = QString("<font color=\"#FF0000\"> %1 </font>\n").arg("Error, Check again ...");
         ui->resultText->append(msg);
         return false;
     } else {
@@ -508,5 +509,18 @@ void MainWindow::on_resetSL102PushButton_clicked()
         modbusBase->writeRegisters(ResetEnableAddress, 1, modbusDevice);
         _sleep(2000);
         ui->resultText->append(tr("Reset Dua com"));
+    }
+}
+
+void MainWindow::on_testOperationCheckBox_clicked()
+{
+    if (ui->testOperationCheckBox->isChecked()){
+        ui->testOperationCheckBox->setChecked(false);
+        ui->baseStationCheckBox->setChecked(false);
+        ui->mbusTestCheckBox->setChecked(false);
+    } else {
+        ui->testOperationCheckBox->setChecked(true);
+        ui->baseStationCheckBox->setChecked(true);
+        ui->mbusTestCheckBox->setChecked(true);
     }
 }
