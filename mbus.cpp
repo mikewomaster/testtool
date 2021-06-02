@@ -31,13 +31,19 @@ void MainWindow::on_mbusModeComboBox_currentIndexChanged(int index)
         ui->checkOperationCheckBo->setChecked(true);
         ui->baseStationCheckBox->setChecked(false);
         ui->mbusTestCheckBox->setChecked(false);
+        ui->modelNameSl102CheckBox->setChecked(true);
+        ui->SNSl102CheckBox->setChecked(true);
         // on_testOperationCheckBox_clicked();
     }
     else if (index == 2)
     {
         ui->loadDefaultOperationCheckBox->setChecked(false);
         ui->checkOperationCheckBo->setChecked(false);
-        on_testOperationCheckBox_clicked();
+        ui->testOperationCheckBox->setChecked(true);
+        ui->baseStationCheckBox->setChecked(true);
+        ui->mbusTestCheckBox->setChecked(true);
+        ui->modelNameSl102CheckBox->setChecked(false);
+        ui->SNSl102CheckBox->setChecked(false);
     }
     else if (index == 0)
     {
@@ -239,14 +245,6 @@ void MainWindow::mbusTestStart()
                     // return;
                 }
 
-                modbusBase->readRegisters(NBStatusAddress, OneEntry, modbusDevice, &(modbusBase->handleNBSTATUS));
-                _sleep(2000);
-                setUILabelInfoEachTIme(ui->mbusCellularLabel);
-                if (ui->mbusCellularLabel->text().contains("FAIL")) {
-                    setUILabelInfo(ui->mbusCellularLabel);
-                    // return;
-                }
-
                 modbusBase->readRegisters(NBRSSIAddress, OneEntry, modbusDevice, &(modbusBase->handleNBRSSI));
                 _sleep(2000);
                 setUILabelInfoEachTIme(ui->mbusCellularLabel);
@@ -255,6 +253,13 @@ void MainWindow::mbusTestStart()
                     // return;
                 }
 
+                modbusBase->readRegisters(NBStatusAddress, OneEntry, modbusDevice, &(modbusBase->handleNBSTATUS));
+                _sleep(2000);
+                setUILabelInfoEachTIme(ui->mbusCellularLabel);
+                if (ui->mbusCellularLabel->text().contains("FAIL")) {
+                    setUILabelInfo(ui->mbusCellularLabel);
+                    // return;
+                }
                 ui->resultText->append("Wait and test again!");
             }
 
@@ -323,19 +328,19 @@ void MainWindow::mbusTestStart()
 
     modbusBase->readRegisters(meterPollSN, EightEntries, modbusDevice, &(modbusBase->handleMeterPoll));
     _sleep(2000);
-    setUILabelInfoEachTIme(ui->mbusTestLabel);
-    if (ui->mbusTestLabel->text().contains("FAIL")) {
-        setUILabelInfo(ui->mbusTestLabel);
-        return;
-    }
+    // setUILabelInfoEachTIme(ui->mbusTestLabel);
+    // if (ui->mbusTestLabel->text().contains("FAIL")) {
+        // setUILabelInfo(ui->mbusTestLabel);
+        // return;
+    // }
 
     modbusBase->readRegisters(meterPollManu, EightEntries, modbusDevice, &(modbusBase->handleMeterPoll));
     _sleep(2000);
-    setUILabelInfoEachTIme(ui->mbusTestLabel);
-    if (ui->mbusTestLabel->text().contains("FAIL")) {
-        setUILabelInfo(ui->mbusTestLabel);
-        return;
-    }
+    // setUILabelInfoEachTIme(ui->mbusTestLabel);
+    // if (ui->mbusTestLabel->text().contains("FAIL")) {
+        // setUILabelInfo(ui->mbusTestLabel);
+        // return;
+    // }
 
     modbusBase->readRegisters(meterStatus, OneEntry, modbusDevice, &(modbusBase->handleMeterPollStatus));
     _sleep(2000);
@@ -343,21 +348,31 @@ void MainWindow::mbusTestStart()
         return;
 
     _sleep(1000);
-    on_savePushButton_clicked();
+    // on_savePushButton_clicked();
 }
 
 void MainWindow::on_mbusPushButton_clicked()
 {
+    on_mbusModeComboBox_currentIndexChanged(ui->mbusModeComboBox->currentIndex());
+    ui->resultText->clear();
+    ui->mbusPushButton->setText("Testing");
+
     if (ui->testOperationCheckBox->isChecked())
     {
         mbusTestStart();
     }
-    else if (ui->loadDefaultOperationCheckBox->isChecked())
+
+    if (ui->loadDefaultOperationCheckBox->isChecked())
     {
         mbusLoadDefaultStart();
     }
-    else if (ui->checkOperationCheckBo->isChecked())
+
+    if (ui->checkOperationCheckBo->isChecked())
     {
         mbusCheckStart();
     }
+    on_resetPushButton_clicked();
+    _sleep();
+    on_savePushButton_clicked();
+    ui->mbusPushButton->setText("Start");
 }

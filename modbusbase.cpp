@@ -30,14 +30,14 @@ void ModbusBase::writeRegisters(int addr, int num, QVector<quint16> newValues, Q
                         .arg(reply->errorString()).arg(reply->rawResult().exceptionCode(), -1, 16),
                         5000);
                     flag = 1;
-                    ui->resultText->append("Set Fail\n");
+                    ui->resultText->append("Set Fail");
                 } else if (reply->error() != QModbusDevice::NoError) {
                     getMainWindow()->statusBar()->showMessage(tr("Write response error: %1 (code: 0x%2)").
                         arg(reply->errorString()).arg(reply->error(), -1, 16), 5000);
                     flag = 1;
-                    ui->resultText->append("Set Fail\n");
+                    ui->resultText->append("Set Fail");
                 } else {
-                    ui->resultText->append("Set Successful\n");
+                    ui->resultText->append("Set Successful");
                     flag = 0;
                     getMainWindow()->statusBar()->showMessage(tr("OK!"));
                 }
@@ -76,6 +76,9 @@ void ModbusBase::writeRegisters(int addr, int num, QString str, QModbusClient *m
         for (i = (i / 2); i < num; i++) {
             values.push_back(0x0000);
         }
+    } else if (!str.size()) {
+        for (i = 0; i < 4; i++)
+            values.push_back(0x0000);
     }
 
     if (modbusDevice->state() == QModbusDevice::UnconnectedState ) {
@@ -96,16 +99,20 @@ void ModbusBase::writeRegisters(int addr, int num, QString str, QModbusClient *m
                     getMainWindow()->statusBar()->showMessage(tr("Write response error: %1 (Mobus exception: 0x%2)")
                         .arg(reply->errorString()).arg(reply->rawResult().exceptionCode(), -1, 16),
                         5000);
-                        ui->resultText->append("Set Fail\n");
+                        ui->resultText->append("Set Fail");
+                        ui->resultText->append(tr("Write response error: %1 (Mobus exception: 0x%2)")
+                                               .arg(reply->errorString()).arg(reply->rawResult().exceptionCode(), -1, 16));
                         flag = 1;
                 } else if (reply->error() != QModbusDevice::NoError) {
                     getMainWindow()->statusBar()->showMessage(tr("Write response error: %1 (code: 0x%2)").
                         arg(reply->errorString()).arg(reply->error(), -1, 16), 5000);
-                        ui->resultText->append("Set Fail\n");
+                        ui->resultText->append("Set Fail 111");
+                        ui->resultText->append(tr("Write response error: %1 (code: 0x%2)").
+                                               arg(reply->errorString()).arg(reply->error(), -1, 16));
                         flag = 1;
                 } else {
                     getMainWindow()->statusBar()->showMessage(tr("OK!"));
-                    ui->resultText->append("Set Successful\n");
+                    ui->resultText->append("Set Successful");
                     flag = 0;
                 }
                 reply->deleteLater();
@@ -626,6 +633,9 @@ void ModbusBase::handleReadBatteryVoltage()
         const QModbusDataUnit unit = reply->result();
         QString result = "Battery voltage is " + QString::number(unit.value(0)) + " mv.";
         ui->resultText->append(result);
+        if (unit.value(0) < 3000)
+            flag = 1;
+
         getMainWindow()->statusBar()->showMessage(tr("OK!"));
     } else if (reply->error() == QModbusDevice::ProtocolError) {
         flag = 1;
@@ -651,14 +661,14 @@ void ModbusBase::handleReadMode()
 
     if (reply->error() == QModbusDevice::NoError) {
         const QModbusDataUnit unit = reply->result();
-        int value = unit.value(0) - 1;
+        int value = unit.value(0);
         // ui->mbusModeComboBox->setCurrentIndex(value);
         if (value == 0)
             ui->mbusCurrentModeLlineEdit->setText("Normal");
         else if (value == 1)
-            ui->mbusCurrentModeLlineEdit->setText("Test");
-        else if (value == 2)
             ui->mbusCurrentModeLlineEdit->setText("Set");
+        else if (value == 2)
+            ui->mbusCurrentModeLlineEdit->setText("Test");
 
         getMainWindow()->statusBar()->showMessage(tr("OK!"));
     } else if (reply->error() == QModbusDevice::ProtocolError) {

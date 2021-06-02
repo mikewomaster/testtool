@@ -14,19 +14,19 @@
 
 void MainWindow::on_resetPushButton_clicked()
 {
-    if (!modbusDevice || !modbusGoldenDevice)
-        return;
+    // if (!modbusDevice || !modbusGoldenDevice)
+        // return;
 
-    on_savePushButton_clicked();
+    // on_savePushButton_clicked();
 
     if (modbusDevice->state() == QModbusDevice::ConnectedState) {
         modbusBase->writeRegisters(ResetEnableAddress, 1, modbusDevice);
         _sleep(2000);
         ui->resultText->append(tr("Reset Dua com"));
-        modbusDevice->disconnectDevice();
-        ui->connectPushButton->setText("Connect");
+        // modbusDevice->disconnectDevice();
+        // ui->connectPushButton->setText("Connect");
     }
-
+/*
     if (modbusGoldenDevice->state() == QModbusDevice::ConnectedState){
         if (ui->goldenKeepCheckBox->isChecked())
             return;
@@ -38,6 +38,8 @@ void MainWindow::on_resetPushButton_clicked()
         ui->connectGoldenPushButton->setText("Connect");
         ui->connectGoldenPushButton->setEnabled(true);
     }
+ */
+
 }
 
 void MainWindow::checkIO5(QString str, int value, int gap, QModbusClient *devWrite, int writeAddr, QModbusClient *devRead, int readAddr)

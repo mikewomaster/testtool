@@ -18,6 +18,7 @@
 #define VersionEntries 8
 
 #define ResetEnableAddress (179 - 1)
+#define FormatFlash (16 - 1)
 
 #define LoraModbusStartAddr 21
 #define LoraModbusEntries 7

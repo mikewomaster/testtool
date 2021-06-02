@@ -159,10 +159,22 @@ int MainWindow::mqttDefault(Init init)
     MCA[7].addr = mqttIntervalAddress;
     MCA[7].entry = mqttIntervalEntries;
 
-    for (int i = 0; i < 7; i++) {
-        if (MCA[i].str.isEmpty() && MCA[i].value)
+    for (int i = 0; i < 8; i++) {
+        if (i == 1)
         {
             modbusBase->writeRegisters(MCA[i].addr, MCA[i].value, modbusDevice);
+            if (checkFlag(modbusBase->flag) == false) {
+                canNotFixFlag = FallFlag;
+                modbusBase->flag = FallFlag;
+                return 1;
+            }
+        }
+        else if (i == 7)
+        {
+            QVector<quint16> valuesVector;
+            valuesVector.push_back(0x0000);
+            valuesVector.push_back(MCA[i].value);
+            modbusBase->writeRegisters(MCA[i].addr, 2, valuesVector, modbusDevice);
             if (checkFlag(modbusBase->flag) == false) {
                 canNotFixFlag = FallFlag;
                 modbusBase->flag = FallFlag;
@@ -253,6 +265,7 @@ int MainWindow::mbusMeterDefault(Init init)
         quint16 type = addressModelType(init.meterArray[i].toObject()["addressModel"].toString());
         QString address = init.meterArray[i].toObject()["address"].toString();
 
+        ui->resultText->append("set: " + model + " " + QString::number(type) + " " + address);
         QVector<quint16> valueArray = meterHeadModbusUnit(model, EightEntries, type, address, EightEntries);
         modbusBase->writeRegisters(meterModelBaseAddress + (times - 1) * meterGap, 17, valueArray, modbusDevice);
 
@@ -270,30 +283,129 @@ int MainWindow::mbusMeterTagDefault(Init init)
         quint16 index = init.meterTagArray[i].toObject()["dataIndex"].toInt();
         QString magnitue = init.meterTagArray[i].toObject()["magnitude"].toString();
 
+        ui->resultText->append("set: " + attribute + " " + QString::number(index) + " " + magnitue);
         QVector<quint16> valueArray = meterHeadModbusUnit(attribute, 4, index, magnitue, 4);
-        modbusBase->writeRegisters(meterTagBaseAddress + (times - 1) * meterGap + tagTimes * 9, 9, valueArray, modbusDevice);
+        modbusBase->writeRegisters(meterTagBaseAddress + (times - 1) * meterGap + (tagTimes - 1) * 9, 9, valueArray, modbusDevice);
 
         _sleep();
+    }
+}
+
+void MainWindow::mbusLoadModelSN()
+{
+    /*
+     *  1. model name
+     *
+     * QJsonObject arrObj = init->Array[index].toObject();
+     * QString str = arrObj["Model Name"].toString();
+     */
+    if (ui->modelNameSl102CheckBox->isChecked()) {
+         if (ui->modelNameSl102ComBox->currentText() == "") {
+             QMessageBox::question(this, "Model Name", "Please Check ModelName which has no value!!!");
+             return;
+         }
+
+        QString msg = QString("<font color=\"#FF0000\"> %1 </font>\n").arg("FAIL");
+         if (1) {
+            QString str = ui->modelNameSl102ComBox->currentText();
+            ui->resultText->append("Model Name: " + str);
+            modbusBase->cv.modelName = str;
+            modbusBase->writeRegisters(ModelNameAddr, ModelNameEntires, str, modbusDevice);
+            _sleep(2000);
+            if (checkFlag(modbusBase->flag) == false) {
+                modbusBase->flag = FallFlag;
+                ui->modelSL102Label->setText(msg);
+                return;
+            } else {
+                modbusBase->readRegisters(ModelNameAddr, ModelNameEntires, modbusDevice, &(modbusBase->handleReadModelName));
+                _sleep(2000);
+                if (checkFlag(modbusBase->flag) == false) {
+                    modbusBase->flag = FallFlag;
+                    ui->modelSL102Label->setText(msg);
+                    return;
+                }
+                msg = QString("<font color=\"#2E8B57\"> %1 </font>\n").arg("PASS");
+                ui->modelSL102Label->setText(msg);
+            }
+         } else {
+             ui->modelSL102Label->setText(msg);
+         }
+     }
+
+    /*
+     *  2. SN
+     *  arrObj = init->Array[index].toObject();
+     *  str = arrObj["SN"].toString();
+     */
+    if (ui->SNSl102CheckBox->isChecked()) {
+        if (ui->SNSl102LineEdit->text() == "") {
+            QMessageBox::question(this, "SN", "Please Check SN which has no value!!!");
+            return;
+        }
+
+        QString msg = QString("<font color=\"#FF0000\"> %1 </font>\n").arg("FAIL");
+        if (1) {
+            QString str = ui->SNSl102LineEdit->text();
+            ui->resultText->append("SN: " + str);
+            modbusBase->cv.SN = str;
+            modbusBase->writeRegisters(SNAddr, SNEntries, str, modbusDevice);
+            _sleep(2000);
+            if (checkFlag(modbusBase->flag) == false) {
+                ui->SNSl102Label->setText(msg);
+                modbusBase->flag = 0;
+                return;
+            } else {
+                modbusBase->readRegisters(SNAddr, SNEntries, modbusDevice, &(modbusBase->handleReadSN));
+                _sleep(2000);
+                if (checkFlag(modbusBase->flag) == false) {
+                    ui->SNSl102Label->setText(msg);
+                    modbusBase->flag = FallFlag;
+                    return;
+                }
+                msg = QString("<font color=\"#2E8B57\"> %1 </font>\n").arg("PASS");
+                ui->SNSl102Label->setText(msg);
+            }
+        } else {
+            ui->SNSl102Label->setText(msg);
+        }
+        // ui->SNSl102LineEdit->clear();
     }
 }
 
 void MainWindow::mbusLoadDefaultStart()
 {
     Init init(1);
-    ui->resultText->append("mbus write parameters start");
 
+    int res;
+
+    ui->resultText->append("----------------------------");
+    mbusLoadModelSN();
+
+    ui->resultText->append("mbus write parameters start");
     if (mbusDefault(init))
         return;
+    ui->resultText->append("----------------------------");
 
+    ui->resultText->append("cellular write parameters start");
     if (cellularDefault(init))
         return;
+    ui->resultText->append("----------------------------");
 
-    if (mqttDefault(init))
+    ui->resultText->append("mqtt write parameters start");
+    if (res = mqttDefault(init))
         return;
+    ui->resultText->append("----------------------------");
 
+    ui->resultText->append("mbus meter write parameters start");
     if (mbusMeterDefault(init))
         return;
+    ui->resultText->append("----------------------------");
 
+    ui->resultText->append("mbus meter tag parameters start");
     if (mbusMeterTagDefault(init))
         return;
+    ui->resultText->append("----------------------------");
+
+    QString msg = QString("<font color=\"#2E8B57\"> %1 </font>\n").arg("PASS");
+    ui->mbusLoadLabel->setText(msg);
 }

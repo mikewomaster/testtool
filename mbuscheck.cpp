@@ -38,8 +38,15 @@ QString switchParityValue(quint16 val)
         return "odd";
 }
 
-int checkSerialResult(const QModbusDataUnit unit)
+int ModbusBase::checkSerialResult(const QModbusDataUnit unit)
 {
+    ui->resultText->append("baudrate: " + QString::number(switchBaudRateValue(unit.value(0))) + "\n"
+                           + "databits: " + QString::number(unit.value(1)) + "\n"
+                           + "stopbits: " + QString::number(unit.value(2)) + "\n"
+                           + "parity: " + switchParityValue(unit.value(3)) + "\n"
+                           + "interval: " + QString::number(unit.value(4)) + "\n"
+                           );
+
     if (jsonValue.mbusArray[0].toObject()["baudrate"].toInt() != switchBaudRateValue(unit.value(0)))
         return 1;
 
@@ -67,7 +74,7 @@ void ModbusBase::handleSerialReadReady()
     if (reply->error() == QModbusDevice::NoError) {
         const QModbusDataUnit unit = reply->result();
         if (checkSerialResult(unit)) {
-            flag == RaiseFlag;
+            flag = RaiseFlag;
             return;
         }
 
@@ -87,6 +94,7 @@ void ModbusBase::handleSerialReadReady()
 int MainWindow::mbusSerialCheck()
 {
     modbusBase->readRegisters(mbusStart, 5, modbusDevice, &(modbusBase->handleSerialReadReady));
+    _sleep(3000);
 
     if (checkFlag(modbusBase->flag) == false) {
         modbusBase->flag = FallFlag;
@@ -130,7 +138,9 @@ void ModbusBase::hanleCellularCheckReadReady()
             s[(2*i) +1] = unit.value(i) & 0x00ff;
         }
 
-        if (s.isEmpty() || s != CCA[cellularCheck].str){
+        ui->resultText->append("compare: " + s + "  " + CCA[cellularCheck].str);
+
+        if (s != CCA[cellularCheck].str){
             flag = RaiseFlag;
         }else {
             flag = FallFlag;
@@ -172,15 +182,17 @@ int MainWindow::mbusCellularCheck()
 
     for(cellularCheck = 0; cellularCheck < 4; cellularCheck++) {
         modbusBase->readRegisters(CCA[cellularCheck].addr, 8, modbusDevice, &(modbusBase->hanleCellularCheckReadReady));
+        _sleep(2000);
         if (checkFlag(modbusBase->flag) == false) {
             modbusBase->flag = FallFlag;
             ui->resultText->append("check mbus cellular paramets fail!");
             return 1;
         }
-
-        ui->resultText->append("check mbus cellular paramets success!");
-        return 0;
     }
+
+    _sleep(5000);
+    ui->resultText->append("check mbus cellular paramets success!");
+    return 0;
 }
 
 static int mqttCheck;
@@ -203,13 +215,14 @@ void ModbusBase::handleMqttCheckNumberReadReady()
             result = (result << 16) + unit.value(1);
         }
 
+        ui->resultText->append("compare value: " + QString::number(result) + " " + QString::number(MCA[mqttCheck].value));
         if (result != MCA[mqttCheck].value){
             flag = RaiseFlag;
         }else {
             flag = FallFlag;
         }
 
-        ui->resultText->append("Read: " + QString::number(result) + "fail.");
+        ui->resultText->append("Read: " + QString::number(result));
         getMainWindow()->statusBar()->showMessage(tr("OK!"));
     } else if (reply->error() == QModbusDevice::ProtocolError) {
         flag = RaiseFlag;
@@ -247,7 +260,8 @@ void ModbusBase::handleMqttCheckStringReadReady()
             s[(2*i) +1] = unit.value(i) & 0x00ff;
         }
 
-        if (s.isEmpty() || s != MCA[mqttCheck].str){
+        ui->resultText->append("compare value: " + s + " : " + MCA[mqttCheck].str);
+        if (s != MCA[mqttCheck].str){
             flag = RaiseFlag;
         }else {
             flag = FallFlag;
@@ -301,7 +315,7 @@ int MainWindow::mbusMqttCheck()
     MCA[4].addr = mqttClinetIDAddress;
     MCA[4].entry = mqttClinetIDEntries;
 
-    QString username = jsonValue.mqttArray[0].toObject()["usernmae"].toString();
+    QString username = jsonValue.mqttArray[0].toObject()["username"].toString();
     MCA[5].str = username;
     MCA[5].value = 0;
     MCA[5].addr = mqttUserAddress;
@@ -319,8 +333,8 @@ int MainWindow::mbusMqttCheck()
     MCA[7].addr = mqttIntervalAddress;
     MCA[7].entry = mqttIntervalEntries;
 
-    for (mqttCheck = 0; mqttCheck < 7; mqttCheck ++) {
-        if (mqttCheck == 0 || mqttCheck == 7)
+    for (mqttCheck = 0; mqttCheck < 8; mqttCheck ++) {
+        if (mqttCheck == 1 || mqttCheck == 7)
             modbusBase->readRegisters(MCA[mqttCheck].addr, MCA[mqttCheck].entry, modbusDevice, &(modbusBase->handleMqttCheckNumberReadReady));
         else
             modbusBase->readRegisters(MCA[mqttCheck].addr, MCA[mqttCheck].entry, modbusDevice, &(modbusBase->handleMqttCheckStringReadReady));
@@ -328,7 +342,7 @@ int MainWindow::mbusMqttCheck()
         _sleep();
         if (checkFlag(modbusBase->flag) == false) {
             modbusBase->flag = FallFlag;
-            ui->resultText->append("check mqtt cellular paramets fail!");
+            ui->resultText->append("check mqtt paramets fail!");
             return 1;
         }
         ui->resultText->append("check mqtt cellular done!");
@@ -417,17 +431,19 @@ int MainWindow::mbusMeterCheck()
 {
     for (int i = 0; i < jsonValue.meterArray.size(); i++) {
         int times = jsonValue.meterArray[i].toObject()["number"].toInt();
+
         MeCA[0].str = jsonValue.meterArray[i].toObject()["model"].toString();
         MeCA[1].value = switchModelToInt(jsonValue.meterArray[i].toObject()["addressModel"].toString());
         MeCA[2].str = jsonValue.meterArray[i].toObject()["address"].toString();
 
-        modbusBase->readRegisters(meterModelBaseAddress + meterGap * times, 17, modbusDevice, &(modbusBase->handleMeterReadReady));
+        modbusBase->readRegisters(meterModelBaseAddress + meterGap * (times - 1), 17, modbusDevice, &(modbusBase->handleMeterReadReady));
+        _sleep();
+
         if (checkFlag(modbusBase->flag) == false) {
             modbusBase->flag = FallFlag;
             ui->resultText->append("check meter parameters paramets fail!");
             return 1;
         }
-        _sleep();
     }
 
     ui->resultText->append("check meter parameters successful!");
@@ -455,12 +471,15 @@ void ModbusBase::handleMeterTagReadReady()
             s[(2*i) +1] = unit.value(i) & 0x00ff;
         }
         s.remove('\"');
+        s.remove(' ');
+        ui->resultText->append("compare value: " + s + ":" + MtCA[0].str);
         if (s != MtCA[0].str) {
             ui->resultText->append("Read: " + s + "fail.");
             flag = RaiseFlag;
         }
         s.clear();
 
+        ui->resultText->append("compare value: " + QString::number(unit.value(4)) + ":" + QString::number(MtCA[1].value));
         if (unit.value(4) != MtCA[1].value) {
             ui->resultText->append("Read: " + QString::number(unit.value(4)) + "fail.");
             flag = RaiseFlag;
@@ -476,7 +495,9 @@ void ModbusBase::handleMeterTagReadReady()
         }
         s.remove('\"');
         s.remove(' ');
-        if (s != MtCA[2].str) {
+
+        ui->resultText->append("compare value: " + s + ":" + MtCA[2].str.remove(' '));
+        if (s != MtCA[2].str.remove(' ')) {
             ui->resultText->append("Read: " + s + "fail.");
             flag = RaiseFlag;
         }
@@ -498,20 +519,21 @@ void ModbusBase::handleMeterTagReadReady()
 int MainWindow::mbusMeterTagCheck()
 {
     for (int i = 0; i < jsonValue.meterTagArray.size(); i++){
-        int meterNo = jsonValue.meterArray[i].toObject()["numberOfMeter"].toInt();
-        int meterTagNo = jsonValue.meterArray[i].toObject()["numberOfTag"].toInt();
+        int meterNo = jsonValue.meterTagArray[i].toObject()["numberOfMeter"].toInt();
+        int meterTagNo = jsonValue.meterTagArray[i].toObject()["numberOfTag"].toInt();
 
-        MtCA[0].str = jsonValue.meterArray[i].toObject()["attributeName"].toString();
-        MtCA[1].value = jsonValue.meterArray[i].toObject()["dataIndex"].toInt();
-        MtCA[2].str = jsonValue.meterArray[i].toObject()["attributeName"].toString();
+        MtCA[0].str = jsonValue.meterTagArray[i].toObject()["attributeName"].toString();
+        MtCA[1].value = jsonValue.meterTagArray[i].toObject()["dataIndex"].toInt();
+        MtCA[2].str = jsonValue.meterTagArray[i].toObject()["magnitude"].toString();
 
-        modbusBase->readRegisters(meterTagBaseAddress + meterGap * meterNo + (9 * meterTagNo), 9, modbusDevice, &(modbusBase->handleMeterTagReadReady));
+        modbusBase->readRegisters(meterTagBaseAddress + meterGap * (meterNo - 1) + (9 * (meterTagNo - 1)), 9, modbusDevice, &(modbusBase->handleMeterTagReadReady));
+        _sleep();
+
         if (checkFlag(modbusBase->flag) == false) {
             modbusBase->flag = FallFlag;
             ui->resultText->append("check meter tag parameters paramets fail!");
             return 1;
         }
-        _sleep();
     }
 
     ui->resultText->append("check meter tag parameters successful!");
@@ -520,8 +542,10 @@ int MainWindow::mbusMeterTagCheck()
 
 void MainWindow::mbusCheckStart()
 {
-    ui->resultText->append("mbus read&check parameters start");
+    jsonValue.initEnvironmentJSON(1);
+    modbusBase->flag = FallFlag;
 
+    ui->resultText->append("mbus read&check parameters start");
     if(mbusSerialCheck())
         return;
     _sleep();
@@ -541,4 +565,7 @@ void MainWindow::mbusCheckStart()
     if (mbusMeterTagCheck())
         return;
     _sleep();
+
+    QString msg = QString("<font color=\"#2E8B57\"> %1 </font>\n").arg("PASS");
+    ui->mbusCheckLabel->setText(msg);
 }

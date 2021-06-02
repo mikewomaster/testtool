@@ -106,7 +106,7 @@ void MainWindow::on_connectPushButton_clicked()
             modbusDevice->setConnectionParameter(QModbusDevice::SerialDataBitsParameter,QSerialPort::Data8);
             modbusDevice->setConnectionParameter(QModbusDevice::SerialParityParameter,QSerialPort::NoParity);
             modbusDevice->setConnectionParameter(QModbusDevice::SerialStopBitsParameter,QSerialPort::OneStop);
-            modbusDevice->setTimeout(3000);
+            modbusDevice->setTimeout(6000);
             modbusDevice->setNumberOfRetries(0);
             if (modbusDevice->connectDevice())
                 ui->connectPushButton->setText(tr("Disconnect"));
@@ -258,7 +258,7 @@ void MainWindow::_sleep(unsigned int msec)
 bool MainWindow::checkFlag(int flag)
 {
     if (flag) {
-        QString msg = QString("<font color=\"#FF0000\"> %1 </font>\n").arg("Error, Check again ...");
+        QString msg = QString("<font color=\"#FF0000\"> %1 </font>\n").arg("WARN: Check again ...");
         ui->resultText->append(msg);
         return false;
     } else {
@@ -522,5 +522,18 @@ void MainWindow::on_testOperationCheckBox_clicked()
         ui->testOperationCheckBox->setChecked(true);
         ui->baseStationCheckBox->setChecked(true);
         ui->mbusTestCheckBox->setChecked(true);
+    }
+}
+
+void MainWindow::on_formatFlashPushButton_clicked()
+{
+    if (!modbusDevice)
+        return;
+
+    if (modbusDevice->state() == QModbusDevice::ConnectedState) {
+        modbusBase->writeRegisters(FormatFlash, 1, modbusDevice);
+        ui->resultText->append(tr("WARN: You are fomart flash, Please wait a while!"));
+        _sleep(5000);
+        ui->resultText->append("Format Flash Done.");
     }
 }

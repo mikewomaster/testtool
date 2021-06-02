@@ -55,6 +55,7 @@ private:
     int mbusMeterDefault(Init);
     QVector<quint16> meterHeadModbusUnit(QString, int , quint16 , QString , int);
     int mbusMeterTagDefault(Init);
+    void mbusLoadModelSN();
     void mbusLoadDefaultStart();
 
     int mbusSerialCheck();
@@ -91,6 +92,8 @@ private slots:
     void on_mbusPushButton_clicked();
 
     void on_testOperationCheckBox_clicked();
+
+    void on_formatFlashPushButton_clicked();
 
 private:
     Ui::MainWindow *ui;

@@ -36,6 +36,7 @@ public:
 private:
     void processReadUnit(QModbusDataUnit, QString);
     QMainWindow* getMainWindow();
+    int checkSerialResult(const QModbusDataUnit);
 private slots:
     void handleReadSN();
     void handleReadModelName();
