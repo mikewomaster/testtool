@@ -528,10 +528,10 @@ void ModbusBase::writeRegisters(int addr, int val, QModbusClient *modbusDevice)
                    getMainWindow()->statusBar()->showMessage(tr("Write response error: %1 (Mobus exception: 0x%2)")
                         .arg(reply->errorString()).arg(reply->rawResult().exceptionCode(), -1, 16),
                         5000);
-                   ui->resultText->append("Set Fail 1");
+                   ui->resultText->append("Fail: Protocol Error");
                    flag = 1;
                 } else if (reply->error() != QModbusDevice::NoError) {
-                   ui->resultText->append("Set Fail 2");
+                   // ui->resultText->append("Fail");
                    getMainWindow()->statusBar()->showMessage(tr("Write response error: %1 (code: 0x%2)").
                         arg(reply->errorString()).arg(reply->error(), -1, 16), 5000);
                    flag = 1;

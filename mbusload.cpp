@@ -378,8 +378,8 @@ void MainWindow::mbusLoadDefaultStart()
 
     int res;
 
-    ui->resultText->append("----------------------------");
-    mbusLoadModelSN();
+    // ui->resultText->append("----------------------------");
+    // mbusLoadModelSN();
 
     ui->resultText->append("mbus write parameters start");
     if (mbusDefault(init))

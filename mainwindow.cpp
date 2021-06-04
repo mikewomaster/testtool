@@ -44,7 +44,7 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->tabWidget->setStyleSheet("QTabBar::tab:disabled {width: 0; color: transparent;}");
     ui->mqttTestCheckBox->setVisible(false);
 
-    setWindowTitle("mbus product test tool");
+    setWindowTitle("mbus product test tool v1.0");
 }
 
 MainWindow::~MainWindow()

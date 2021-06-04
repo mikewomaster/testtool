@@ -353,9 +353,18 @@ void MainWindow::mbusTestStart()
 
 void MainWindow::on_mbusPushButton_clicked()
 {
-    on_mbusModeComboBox_currentIndexChanged(ui->mbusModeComboBox->currentIndex());
+    int mbusModeComBoxIndex = ui->mbusModeComboBox->currentIndex();
+    // on_mbusModeComboBox_currentIndexChanged(mbusModeComBoxIndex);
+    modbusBase->writeRegisters(systemModeAddress, mbusModeComBoxIndex, modbusDevice);
+    _sleep();
+    modbusBase->readRegisters(systemModeAddress, OneEntry, modbusDevice, &modbusBase->handleReadMode);
+    _sleep();
+
     ui->resultText->clear();
     ui->mbusPushButton->setText("Testing");
+
+    ui->resultText->append("----------------------------");
+    mbusLoadModelSN();
 
     if (ui->testOperationCheckBox->isChecked())
     {
@@ -365,14 +374,15 @@ void MainWindow::on_mbusPushButton_clicked()
     if (ui->loadDefaultOperationCheckBox->isChecked())
     {
         mbusLoadDefaultStart();
+        on_resetPushButton_clicked();
     }
 
     if (ui->checkOperationCheckBo->isChecked())
     {
         mbusCheckStart();
     }
-    on_resetPushButton_clicked();
     _sleep();
+
     on_savePushButton_clicked();
     ui->mbusPushButton->setText("Start");
 }
