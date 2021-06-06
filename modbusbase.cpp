@@ -387,6 +387,40 @@ void ModbusBase::handleMeterPollStatus()
     reply->deleteLater();
 }
 
+void ModbusBase::handleNBIMEI()
+{
+    auto reply = qobject_cast<QModbusReply *>(sender());
+    if (!reply)
+        return;
+
+    if (reply->error() == QModbusDevice::NoError) {
+        const QModbusDataUnit unit = reply->result();
+        QString s;
+        for (uint i = 0; i < unit.valueCount(); i++) {
+            if ((unit.value(i) >> 8) == 0x00)
+                break;
+            s[2*i] = unit.value(i) >> 8;
+            if ((unit.value(i) & 0x00ff) == 0x00)
+                break;
+            s[(2*i) +1] = unit.value(i) & 0x00ff;
+        }
+
+        s.remove('\"');
+        ui->mbusNBIMEILineEdit->setText(s);
+        ui->resultText->append(s);
+        getMainWindow()->statusBar()->showMessage(tr("OK!"));
+    } else if (reply->error() == QModbusDevice::ProtocolError) {
+        getMainWindow()->statusBar()->showMessage(tr("Read response error: %1 (Mobus exception: 0x%2)").
+                                    arg(reply->errorString()).
+                                    arg(reply->rawResult().exceptionCode(), -1, 16), 5000);
+    } else {
+        getMainWindow()->statusBar()->showMessage(tr("Read response error: %1 (code: 0x%2)").
+                                    arg(reply->errorString()).
+                                    arg(reply->error(), -1, 16), 5000);
+    }
+    reply->deleteLater();
+}
+
 void ModbusBase::handleNBSTATUS()
 {
     auto reply = qobject_cast<QModbusReply *>(sender());

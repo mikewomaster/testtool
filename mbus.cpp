@@ -266,6 +266,10 @@ void MainWindow::mbusTestStart()
             if (modbusBase->mbusCellularStatus) {
                 // modbusBase->mbusCellularStatus = false;
                 modbusBase->flag = FallFlag;
+
+                modbusBase->readRegisters(NBIMEIAddress, EightEntries, modbusDevice, &(modbusBase->handleNBIMEI));
+                _sleep();
+
                 break;
             }
 
@@ -361,6 +365,14 @@ void MainWindow::on_mbusPushButton_clicked()
     _sleep();
 
     ui->resultText->clear();
+
+    ui->modelSL102Label->clear();
+    ui->SNSl102Label->clear();
+    ui->mbusTestLabel->clear();
+    ui->mbusNBIMEILineEdit->clear();
+    ui->mbusLoadLabel->clear();
+    ui->mbusCheckResultLabel->clear();
+
     ui->mbusPushButton->setText("Testing");
 
     ui->resultText->append("----------------------------");
@@ -374,12 +386,12 @@ void MainWindow::on_mbusPushButton_clicked()
     if (ui->loadDefaultOperationCheckBox->isChecked())
     {
         mbusLoadDefaultStart();
-        on_resetPushButton_clicked();
     }
 
     if (ui->checkOperationCheckBo->isChecked())
     {
         mbusCheckStart();
+        on_resetPushButton_clicked();
     }
     _sleep();
 

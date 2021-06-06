@@ -1332,19 +1332,6 @@
        <string>Start</string>
       </property>
      </widget>
-     <widget class="QLabel" name="label_12">
-      <property name="geometry">
-       <rect>
-        <x>10</x>
-        <y>380</y>
-        <width>471</width>
-        <height>21</height>
-       </rect>
-      </property>
-      <property name="text">
-       <string>_____________________________________________________________________</string>
-      </property>
-     </widget>
      <widget class="QWidget" name="layoutWidget">
       <property name="geometry">
        <rect>
@@ -1458,7 +1445,7 @@
           </widget>
          </item>
          <item>
-          <widget class="QLabel" name="mbusCheckLabel">
+          <widget class="QLabel" name="mbusCheckResultLabel">
            <property name="text">
             <string/>
            </property>
@@ -1637,6 +1624,11 @@
            <height>0</height>
           </size>
          </property>
+         <property name="font">
+          <font>
+           <pointsize>9</pointsize>
+          </font>
+         </property>
          <property name="text">
           <string/>
          </property>
@@ -1672,7 +1664,7 @@
          <property name="font">
           <font>
            <family>Arial</family>
-           <pointsize>14</pointsize>
+           <pointsize>12</pointsize>
           </font>
          </property>
         </widget>
@@ -1684,6 +1676,11 @@
            <width>150</width>
            <height>0</height>
           </size>
+         </property>
+         <property name="font">
+          <font>
+           <pointsize>9</pointsize>
+          </font>
          </property>
          <property name="text">
           <string/>
@@ -1746,7 +1743,7 @@
          <property name="font">
           <font>
            <family>Arial</family>
-           <pointsize>14</pointsize>
+           <pointsize>12</pointsize>
           </font>
          </property>
          <property name="editable">
@@ -1761,32 +1758,6 @@
          </property>
          <property name="checked">
           <bool>false</bool>
-         </property>
-        </widget>
-       </item>
-      </layout>
-     </widget>
-     <widget class="QWidget" name="layoutWidget">
-      <property name="geometry">
-       <rect>
-        <x>10</x>
-        <y>490</y>
-        <width>391</width>
-        <height>28</height>
-       </rect>
-      </property>
-      <layout class="QHBoxLayout" name="horizontalLayout_22">
-       <item>
-        <widget class="QCheckBox" name="mqttTestCheckBox">
-         <property name="text">
-          <string>MQTT Test</string>
-         </property>
-        </widget>
-       </item>
-       <item>
-        <widget class="QLabel" name="mbusMQTTLabel">
-         <property name="text">
-          <string/>
          </property>
         </widget>
        </item>
@@ -1822,7 +1793,7 @@
       <property name="geometry">
        <rect>
         <x>11</x>
-        <y>450</y>
+        <y>490</y>
         <width>391</width>
         <height>28</height>
        </rect>
@@ -1885,6 +1856,28 @@
        </item>
       </layout>
      </widget>
+     <widget class="QWidget" name="layoutWidget_6">
+      <property name="geometry">
+       <rect>
+        <x>30</x>
+        <y>450</y>
+        <width>371</width>
+        <height>30</height>
+       </rect>
+      </property>
+      <layout class="QHBoxLayout" name="horizontalLayout_32">
+       <item>
+        <widget class="QLabel" name="label_12">
+         <property name="text">
+          <string>IMEI  </string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QLineEdit" name="mbusNBIMEILineEdit"/>
+       </item>
+      </layout>
+     </widget>
     </widget>
    </widget>
    <widget class="QPushButton" name="clearPushButton">
@@ -1924,6 +1917,32 @@
     <property name="text">
      <string>Save</string>
     </property>
+   </widget>
+   <widget class="QWidget" name="layoutWidget">
+    <property name="geometry">
+     <rect>
+      <x>320</x>
+      <y>620</y>
+      <width>93</width>
+      <height>25</height>
+     </rect>
+    </property>
+    <layout class="QHBoxLayout" name="horizontalLayout_22">
+     <item>
+      <widget class="QCheckBox" name="mqttTestCheckBox">
+       <property name="text">
+        <string>MQTT Test</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QLabel" name="mbusMQTTLabel">
+       <property name="text">
+        <string/>
+       </property>
+      </widget>
+     </item>
+    </layout>
    </widget>
   </widget>
   <widget class="QMenuBar" name="menuBar">

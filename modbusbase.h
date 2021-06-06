@@ -53,6 +53,7 @@ private slots:
     void handleNBSIM();
     void handleNBRSSI();
     void handleNBSTATUS();
+    void handleNBIMEI();
     void handleReadMode();
     void handleReadBatteryVoltage();
     void handleMeterPoll();

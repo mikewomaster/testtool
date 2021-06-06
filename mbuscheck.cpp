@@ -567,5 +567,5 @@ void MainWindow::mbusCheckStart()
     _sleep();
 
     QString msg = QString("<font color=\"#2E8B57\"> %1 </font>\n").arg("PASS");
-    ui->mbusCheckLabel->setText(msg);
+    ui->mbusCheckResultLabel->setText(msg);
 }
