@@ -376,6 +376,7 @@ void MainWindow::on_mbusPushButton_clicked()
     ui->mbusPushButton->setText("Testing");
 
     ui->resultText->append("----------------------------");
+
     mbusLoadModelSN();
 
     if (ui->testOperationCheckBox->isChecked())
