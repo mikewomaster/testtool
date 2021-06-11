@@ -293,6 +293,7 @@ int MainWindow::mbusMeterTagDefault(Init init)
 
 void MainWindow::mbusLoadModelSN()
 {
+
     /*
      *  1. model name
      *
@@ -324,7 +325,7 @@ void MainWindow::mbusLoadModelSN()
                     ui->modelSL102Label->setText(msg);
                     return;
                 }
-                msg = QString("<font color=\"#2E8B57\"> %1 </font>\n").arg("PASS");
+                msg = QString("<font color=\"#2E8B57\"> %1 </font>\n").arg("   PASS");
                 ui->modelSL102Label->setText(msg);
             }
          } else {
@@ -362,7 +363,7 @@ void MainWindow::mbusLoadModelSN()
                     modbusBase->flag = FallFlag;
                     return;
                 }
-                msg = QString("<font color=\"#2E8B57\"> %1 </font>\n").arg("PASS");
+                msg = QString("<font color=\"#2E8B57\"> %1 </font>\n").arg("   PASS");
                 ui->SNSl102Label->setText(msg);
             }
         } else {
@@ -370,6 +371,8 @@ void MainWindow::mbusLoadModelSN()
         }
         // ui->SNSl102LineEdit->clear();
     }
+#if 0
+#endif
 }
 
 void MainWindow::mbusLoadDefaultStart()

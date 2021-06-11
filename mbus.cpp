@@ -264,9 +264,8 @@ void MainWindow::mbusTestStart()
             }
 
             if (modbusBase->mbusCellularStatus) {
-                // modbusBase->mbusCellularStatus = false;
+                modbusBase->mbusCellularStatus = false;
                 modbusBase->flag = FallFlag;
-
                 modbusBase->readRegisters(NBIMEIAddress, EightEntries, modbusDevice, &(modbusBase->handleNBIMEI));
                 _sleep();
 
@@ -290,68 +289,70 @@ void MainWindow::mbusTestStart()
 
     // m-bus
     // m-bus set
-    ui->resultText->append("set meter parameters ... ");
+    if (ui->mbusTestCheckBox->isChecked()) {
+        ui->resultText->append("set meter parameters ... ");
 
-    QString meterModel = init.meterArray[0].toObject()["model"].toString();
-    quint16 meterAddressMode = init.meterArray[0].toObject()["addressModel"].toInt();
-    QString meterAddress = init.meterArray[0].toObject()["address"].toString();
-    QVector<quint16> meterHeadValues =  meterHeadModbusUnit(meterModel, EightEntries, meterAddressMode, meterAddress, EightEntries);
+        QString meterModel = init.meterArray[0].toObject()["model"].toString();
+        quint16 meterAddressMode = init.meterArray[0].toObject()["addressModel"].toInt();
+        QString meterAddress = init.meterArray[0].toObject()["address"].toString();
+        QVector<quint16> meterHeadValues =  meterHeadModbusUnit(meterModel, EightEntries, meterAddressMode, meterAddress, EightEntries);
 
-    modbusBase->writeRegisters(meterModelBaseAddress, EightEntries + OneEntry + EightEntries, meterHeadValues, modbusDevice);
-    if (checkFlag(modbusBase->flag) == false) {
-        modbusBase->flag = 0;
-        return;
+        modbusBase->writeRegisters(meterModelBaseAddress, EightEntries + OneEntry + EightEntries, meterHeadValues, modbusDevice);
+        if (checkFlag(modbusBase->flag) == false) {
+            modbusBase->flag = 0;
+            return;
+        }
+        _sleep(2000);
+
+        modbusBase->writeRegisters(meterPollStart, 1, modbusDevice);
+        if (checkFlag(modbusBase->flag) == false) {
+            modbusBase->flag = 0;
+            return;
+        }
+        _sleep(1200);
+
+        ui->resultText->append(" ");
+        for (int j = 0; j < 5; j++) {
+          QString msg = "Remaing time: " + QString::number(j) + " ...";
+          ui->resultText->insertPlainText(msg);
+          QTextCursor txc(ui->resultText->textCursor());
+          txc.movePosition(QTextCursor::StartOfLine);
+          txc.select(QTextCursor::LineUnderCursor);
+          txc.removeSelectedText();
+          _sleep(1000);
+        }
+
+        // m-bus check
+        modbusBase->writeRegisters(meterAddressBaseAddress, EightEntries, meterAddress, modbusDevice);
+        if (checkFlag(modbusBase->flag) == false) {
+            modbusBase->flag = 0;
+            return;
+        }
+        _sleep(2000);
+
+        modbusBase->readRegisters(meterPollSN, EightEntries, modbusDevice, &(modbusBase->handleMeterPoll));
+        _sleep(2000);
+        // setUILabelInfoEachTIme(ui->mbusTestLabel);
+        // if (ui->mbusTestLabel->text().contains("FAIL")) {
+            // setUILabelInfo(ui->mbusTestLabel);
+            // return;
+        // }
+
+        modbusBase->readRegisters(meterPollManu, EightEntries, modbusDevice, &(modbusBase->handleMeterPoll));
+        _sleep(2000);
+        // setUILabelInfoEachTIme(ui->mbusTestLabel);
+        // if (ui->mbusTestLabel->text().contains("FAIL")) {
+            // setUILabelInfo(ui->mbusTestLabel);
+            // return;
+        // }
+
+        modbusBase->readRegisters(meterStatus, OneEntry, modbusDevice, &(modbusBase->handleMeterPollStatus));
+        _sleep(2000);
+        if (setUILabelInfo(ui->mbusTestLabel))
+            return;
+
+        _sleep(1000);
     }
-    _sleep(2000);
-
-    modbusBase->writeRegisters(meterPollStart, 1, modbusDevice);
-    if (checkFlag(modbusBase->flag) == false) {
-        modbusBase->flag = 0;
-        return;
-    }
-    _sleep(1200);
-
-    ui->resultText->append(" ");
-    for (int j = 0; j < 5; j++) {
-      QString msg = "Remaing time: " + QString::number(j) + " ...";
-      ui->resultText->insertPlainText(msg);
-      QTextCursor txc(ui->resultText->textCursor());
-      txc.movePosition(QTextCursor::StartOfLine);
-      txc.select(QTextCursor::LineUnderCursor);
-      txc.removeSelectedText();
-      _sleep(1000);
-    }
-
-    // m-bus check
-    modbusBase->writeRegisters(meterAddressBaseAddress, EightEntries, meterAddress, modbusDevice);
-    if (checkFlag(modbusBase->flag) == false) {
-        modbusBase->flag = 0;
-        return;
-    }
-    _sleep(2000);
-
-    modbusBase->readRegisters(meterPollSN, EightEntries, modbusDevice, &(modbusBase->handleMeterPoll));
-    _sleep(2000);
-    // setUILabelInfoEachTIme(ui->mbusTestLabel);
-    // if (ui->mbusTestLabel->text().contains("FAIL")) {
-        // setUILabelInfo(ui->mbusTestLabel);
-        // return;
-    // }
-
-    modbusBase->readRegisters(meterPollManu, EightEntries, modbusDevice, &(modbusBase->handleMeterPoll));
-    _sleep(2000);
-    // setUILabelInfoEachTIme(ui->mbusTestLabel);
-    // if (ui->mbusTestLabel->text().contains("FAIL")) {
-        // setUILabelInfo(ui->mbusTestLabel);
-        // return;
-    // }
-
-    modbusBase->readRegisters(meterStatus, OneEntry, modbusDevice, &(modbusBase->handleMeterPollStatus));
-    _sleep(2000);
-    if (setUILabelInfo(ui->mbusTestLabel))
-        return;
-
-    _sleep(1000);
     // on_savePushButton_clicked();
 }
 
@@ -372,6 +373,8 @@ void MainWindow::on_mbusPushButton_clicked()
     ui->mbusNBIMEILineEdit->clear();
     ui->mbusLoadLabel->clear();
     ui->mbusCheckResultLabel->clear();
+    ui->mbusTestLabel->clear();
+    ui->mbusCellularLabel->clear();
 
     ui->mbusPushButton->setText("Testing");
 

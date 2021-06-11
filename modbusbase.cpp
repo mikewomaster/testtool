@@ -434,6 +434,7 @@ void ModbusBase::handleNBSTATUS()
         if (nbStatus == 0) {
             ui->resultText->append("CELLUAR ERR");
             flag = 1;
+            mbusCellularStatus = false;
         }
         else if (nbStatus == 1) {
             ui->resultText->append("CELLUAR CONNECTED");
@@ -443,13 +444,16 @@ void ModbusBase::handleNBSTATUS()
         else if (nbStatus == 2) {
             ui->resultText->append("CELLULAR SEARCHING");
             flag = 1;
+            mbusCellularStatus = false;
         }
         else if (nbStatus = 3) {
             ui->resultText->append("CELLULAR DENIED");
             flag = 1;
+            mbusCellularStatus = false;
         }
         else {
             flag = 1;
+            mbusCellularStatus = false;
         }
 
         getMainWindow()->statusBar()->showMessage(tr("OK!"));
