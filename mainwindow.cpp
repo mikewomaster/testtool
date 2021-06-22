@@ -26,7 +26,8 @@ MainWindow::MainWindow(QWidget *parent) :
     lcModbusDevice(nullptr),
     ui(new Ui::MainWindow),
     flagSwitch(0),
-    tableIndex(0)
+    tableIndex(0),
+    testResult("PASS")
     //init (new Init)
 {
     ui->setupUi(this);
@@ -444,19 +445,27 @@ void MainWindow::on_clearPushButton_clicked()
     ui->resultText->clear();
 }
 
+// abstract file write interface later
 void MainWindow::on_savePushButton_clicked()
 {
     QString saveContent = ui->resultText->toPlainText();
 
     QDateTime time = QDateTime::currentDateTime();
-    QString StrCurrentTime = time.toString("_yyyyMMddhhmmss");
-    QString fileName = ui->SNLineEdit->text() + StrCurrentTime + ".txt";
+    QString StrCurrentTime = time.toString("_yyyyMMddhhmmss_");
+    QString fileName = ui->SNSl102LineEdit->text() + StrCurrentTime + testResult + ".txt";
 
     QFile file(fileName);
     file.open(QIODevice::ReadWrite | QIODevice::Text);
     file.write(saveContent.toUtf8());
     file.close();
     ui->resultText->append("save file " + fileName + " successful");
+
+    QFile fileResult("testResult.txt");
+    fileResult.open(QIODevice::Append | QIODevice::Text);
+    QString Content = "\r\n" + ui->SNSl102LineEdit->text() + "\r" + StrCurrentTime + "\r" + testResult;
+    fileResult.write(Content.toUtf8());
+    fileResult.close();
+    ui->resultText->append("save test result into testReulst.txt");
 }
 
 void MainWindow::on_stopPushButton_clicked()

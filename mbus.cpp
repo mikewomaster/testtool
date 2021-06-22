@@ -53,6 +53,18 @@ void MainWindow::on_mbusModeComboBox_currentIndexChanged(int index)
         ui->baseStationCheckBox->setChecked(false);
         ui->mbusTestCheckBox->setChecked(false);
     }
+    else if (index == 3)
+    {
+        ui->modelNameSl102CheckBox->setChecked(true);
+        ui->SNSl102CheckBox->setChecked(true);
+        ui->loadDefaultOperationCheckBox->setChecked(true);
+        ui->checkOperationCheckBo->setChecked(true);
+        ui->testOperationCheckBox->setChecked(true);
+        ui->baseStationCheckBox->setChecked(true);
+        ui->mbusTestCheckBox->setChecked(true);
+
+        return;
+    }
 
     modbusBase->writeRegisters(systemModeAddress, index, modbusDevice);
     _sleep();
@@ -119,6 +131,7 @@ void MainWindow::mbusTestStart()
             if (checkFlag(modbusBase->flag) == false) {
                 modbusBase->flag = FallFlag;
                 ui->modelSL102Label->setText(msg);
+                testResult = "FAIL";
                 return;
             } else {
                 modbusBase->readRegisters(ModelNameAddr, ModelNameEntires, modbusDevice, &(modbusBase->handleReadModelName));
@@ -157,6 +170,7 @@ void MainWindow::mbusTestStart()
             if (checkFlag(modbusBase->flag) == false) {
                 ui->SNSl102Label->setText(msg);
                 modbusBase->flag = 0;
+                testResult = "FAIL";
                 return;
             } else {
                 modbusBase->readRegisters(SNAddr, SNEntries, modbusDevice, &(modbusBase->handleReadSN));
@@ -179,6 +193,7 @@ void MainWindow::mbusTestStart()
     modbusBase->readRegisters(mBusVoltageAddress, OneEntry, modbusDevice, &modbusBase->handleReadBatteryVoltage);
     if (checkFlag(modbusBase->flag) == false) {
         modbusBase->flag = FallFlag;
+        testResult = "FAIL";
         return;
     }
     _sleep();
@@ -194,6 +209,7 @@ void MainWindow::mbusTestStart()
         modbusBase->writeRegisters(cellularAPNAddress, EightEntries, nbAPN, modbusDevice);
         if (checkFlag(modbusBase->flag) == false) {
             modbusBase->flag = 0;
+            testResult = "FAIL";
             return;
         }
         _sleep(2000);
@@ -201,6 +217,7 @@ void MainWindow::mbusTestStart()
         modbusBase->writeRegisters(cellularUserName, EightEntries, nbUserName, modbusDevice);
         if (checkFlag(modbusBase->flag) == false) {
             modbusBase->flag = 0;
+            testResult = "FAIL";
             return;
         }
         _sleep(2000);
@@ -208,6 +225,7 @@ void MainWindow::mbusTestStart()
         modbusBase->writeRegisters(cellularPassWord, EightEntries, nbPassWord, modbusDevice);
         if (checkFlag(modbusBase->flag) == false) {
             modbusBase->flag = 0;
+            testResult = "FAIL";
             return;
         }
         _sleep(2000);
@@ -215,6 +233,7 @@ void MainWindow::mbusTestStart()
         modbusBase->writeRegisters(cellularPLMN, EightEntries, nbPlmn, modbusDevice);
         if (checkFlag(modbusBase->flag) == false) {
             modbusBase->flag = 0;
+            testResult = "FAIL";
             return;
         }
         _sleep(2000);
@@ -225,6 +244,7 @@ void MainWindow::mbusTestStart()
         setUILabelInfoEachTIme(ui->mbusCellularLabel);
         if (ui->mbusCellularLabel->text().contains("FAIL")) {
             setUILabelInfo(ui->mbusCellularLabel);
+            testResult = "FAIL";
             return;
         }
         QMessageBox::question(this, "NB Test", "Please wait before check nb connection status");
@@ -242,6 +262,7 @@ void MainWindow::mbusTestStart()
                 setUILabelInfoEachTIme(ui->mbusCellularLabel);
                 if (ui->mbusCellularLabel->text().contains("FAIL")) {
                     setUILabelInfo(ui->mbusCellularLabel);
+                    testResult = "FAIL";
                     // return;
                 }
 
@@ -250,6 +271,7 @@ void MainWindow::mbusTestStart()
                 setUILabelInfoEachTIme(ui->mbusCellularLabel);
                 if (ui->mbusCellularLabel->text().contains("FAIL")) {
                     setUILabelInfo(ui->mbusCellularLabel);
+                    testResult = "FAIL";
                     // return;
                 }
 
@@ -258,6 +280,7 @@ void MainWindow::mbusTestStart()
                 setUILabelInfoEachTIme(ui->mbusCellularLabel);
                 if (ui->mbusCellularLabel->text().contains("FAIL")) {
                     setUILabelInfo(ui->mbusCellularLabel);
+                    testResult = "FAIL";
                     // return;
                 }
                 ui->resultText->append("Wait and test again!");
@@ -265,6 +288,7 @@ void MainWindow::mbusTestStart()
 
             if (modbusBase->mbusCellularStatus) {
                 modbusBase->mbusCellularStatus = false;
+                testResult = "PASS";
                 modbusBase->flag = FallFlag;
                 modbusBase->readRegisters(NBIMEIAddress, EightEntries, modbusDevice, &(modbusBase->handleNBIMEI));
                 _sleep();
@@ -300,6 +324,7 @@ void MainWindow::mbusTestStart()
         modbusBase->writeRegisters(meterModelBaseAddress, EightEntries + OneEntry + EightEntries, meterHeadValues, modbusDevice);
         if (checkFlag(modbusBase->flag) == false) {
             modbusBase->flag = 0;
+            testResult = "FAIL";
             return;
         }
         _sleep(2000);
@@ -307,6 +332,7 @@ void MainWindow::mbusTestStart()
         modbusBase->writeRegisters(meterPollStart, 1, modbusDevice);
         if (checkFlag(modbusBase->flag) == false) {
             modbusBase->flag = 0;
+            testResult = "FAIL";
             return;
         }
         _sleep(1200);
@@ -326,6 +352,7 @@ void MainWindow::mbusTestStart()
         modbusBase->writeRegisters(meterAddressBaseAddress, EightEntries, meterAddress, modbusDevice);
         if (checkFlag(modbusBase->flag) == false) {
             modbusBase->flag = 0;
+            testResult = "FAIL";
             return;
         }
         _sleep(2000);
@@ -348,8 +375,10 @@ void MainWindow::mbusTestStart()
 
         modbusBase->readRegisters(meterStatus, OneEntry, modbusDevice, &(modbusBase->handleMeterPollStatus));
         _sleep(2000);
-        if (setUILabelInfo(ui->mbusTestLabel))
+        if (setUILabelInfo(ui->mbusTestLabel)) {
+            testResult = "FAIL";
             return;
+        }
 
         _sleep(1000);
     }
@@ -384,16 +413,36 @@ void MainWindow::on_mbusPushButton_clicked()
 
     if (ui->testOperationCheckBox->isChecked())
     {
+        if (ui->mbusModeComboBox->currentIndex() == 3)
+        {
+            // test model setting firstly
+            modbusBase->writeRegisters(systemModeAddress, 2, modbusDevice);
+            _sleep();
+        }
         mbusTestStart();
     }
 
     if (ui->loadDefaultOperationCheckBox->isChecked())
     {
+        if (ui->mbusModeComboBox->currentIndex() == 3)
+        {
+            // set&check model settings secondly
+            modbusBase->writeRegisters(systemModeAddress, 1, modbusDevice);
+            _sleep();
+        }
+
         mbusLoadDefaultStart();
     }
 
     if (ui->checkOperationCheckBo->isChecked())
     {
+        if (ui->mbusModeComboBox->currentIndex() == 3)
+        {
+            // set&check model settings secondly
+            modbusBase->writeRegisters(systemModeAddress, 1, modbusDevice);
+            _sleep();
+        }
+
         mbusCheckStart();
         on_resetPushButton_clicked();
     }

@@ -64,6 +64,7 @@ private:
     int mbusMeterCheck();
     int mbusMeterTagCheck();
     void mbusCheckStart();
+    QString testResult;
 signals:
     void IOAdjustSignal(adjustIOStruct&);
 
@@ -90,9 +91,7 @@ private slots:
     void on_resetSL102PushButton_clicked();
     void on_mbusModeComboBox_currentIndexChanged(int index);
     void on_mbusPushButton_clicked();
-
     void on_testOperationCheckBox_clicked();
-
     void on_formatFlashPushButton_clicked();
 
 private:

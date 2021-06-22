@@ -316,6 +316,7 @@ void MainWindow::mbusLoadModelSN()
             if (checkFlag(modbusBase->flag) == false) {
                 modbusBase->flag = FallFlag;
                 ui->modelSL102Label->setText(msg);
+                testResult = "FAIL";
                 return;
             } else {
                 modbusBase->readRegisters(ModelNameAddr, ModelNameEntires, modbusDevice, &(modbusBase->handleReadModelName));
@@ -354,6 +355,7 @@ void MainWindow::mbusLoadModelSN()
             if (checkFlag(modbusBase->flag) == false) {
                 ui->SNSl102Label->setText(msg);
                 modbusBase->flag = 0;
+                testResult = "FAIL";
                 return;
             } else {
                 modbusBase->readRegisters(SNAddr, SNEntries, modbusDevice, &(modbusBase->handleReadSN));
@@ -385,28 +387,38 @@ void MainWindow::mbusLoadDefaultStart()
     // mbusLoadModelSN();
 
     ui->resultText->append("mbus write parameters start");
-    if (mbusDefault(init))
+    if (mbusDefault(init)) {
+        testResult = "FAIL";
         return;
+    }
     ui->resultText->append("----------------------------");
 
     ui->resultText->append("cellular write parameters start");
-    if (cellularDefault(init))
+    if (cellularDefault(init)) {
+        testResult = "FAIL";
         return;
+    }
     ui->resultText->append("----------------------------");
 
     ui->resultText->append("mqtt write parameters start");
-    if (res = mqttDefault(init))
+    if (res = mqttDefault(init)) {
+        testResult = "FAIL";
         return;
+    }
     ui->resultText->append("----------------------------");
 
     ui->resultText->append("mbus meter write parameters start");
-    if (mbusMeterDefault(init))
+    if (mbusMeterDefault(init)) {
+        testResult = "FAIL";
         return;
+    }
     ui->resultText->append("----------------------------");
 
     ui->resultText->append("mbus meter tag parameters start");
-    if (mbusMeterTagDefault(init))
+    if (mbusMeterTagDefault(init)) {
+        testResult = "FAIL";
         return;
+    }
     ui->resultText->append("----------------------------");
 
     QString msg = QString("<font color=\"#2E8B57\"> %1 </font>\n").arg("PASS");
