@@ -9,6 +9,7 @@ int main(int argc, char *argv[])
     MainWindow w;
     w.show();
 
+#if 0
     QDateTime time = QDateTime::currentDateTime();
     int timeT = time.toTime_t();
     if (timeT <= 1624198378)
@@ -21,6 +22,7 @@ int main(int argc, char *argv[])
         QMessageBox::information(NULL, "INFO",  "You are using testing Version. License Expired!", QMessageBox::Yes | QMessageBox::No, QMessageBox::Yes);
         return -1;
     }
+#endif
 
     return a.exec();
 }
