@@ -92,6 +92,8 @@ void MainWindow::mbusTestStart()
     ui->resultText->append("------------------------");
     ui->resultText->append("---Start Product Test---");
 
+    testResult = "PASS";
+
     QDateTime time = QDateTime::currentDateTime();
     QString StrCurrentTime = time.toString("yyyy-MM-dd hh:mm:ss ddd");
     ui->resultText->append(StrCurrentTime);

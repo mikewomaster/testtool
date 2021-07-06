@@ -523,7 +523,7 @@ void MainWindow::on_resetSL102PushButton_clicked()
 
 void MainWindow::on_testOperationCheckBox_clicked()
 {
-    if (ui->testOperationCheckBox->isChecked()){
+    if (ui->testOperationCheckBox->isChecked()) {
         ui->testOperationCheckBox->setChecked(false);
         ui->baseStationCheckBox->setChecked(false);
         ui->mbusTestCheckBox->setChecked(false);
