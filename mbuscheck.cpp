@@ -546,24 +546,34 @@ void MainWindow::mbusCheckStart()
     modbusBase->flag = FallFlag;
 
     ui->resultText->append("mbus read&check parameters start");
-    if(mbusSerialCheck())
+    if(mbusSerialCheck()) {
+        testResult = "FAIL";
         return;
+    }
     _sleep();
 
-    if (mbusCellularCheck())
-        return
+    if (mbusCellularCheck()) {
+        testResult = "FAIL";
+        return;
+    }
     _sleep();
 
-    if (mbusMqttCheck())
+    if (mbusMqttCheck()) {
+        testResult = "FAIL";
         return;
+    }
     _sleep();
 
-    if(mbusMeterCheck())
+    if(mbusMeterCheck()) {
+        testResult = "FAIL";
         return;
+    }
     _sleep();
 
-    if (mbusMeterTagCheck())
+    if (mbusMeterTagCheck()) {
+        testResult = "FAIL";
         return;
+    }
     _sleep();
 
     QString msg = QString("<font color=\"#2E8B57\"> %1 </font>\n").arg("PASS");
